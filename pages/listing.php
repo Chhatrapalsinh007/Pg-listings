@@ -317,7 +317,7 @@ try {
                                         <!-- /.img-gallery -->
 
                                         <div class='property-info p-25'>
-                                            <a href='listing-details.php?id=$property[PGID]' class='title tran
+                                            <a href='listing-details.php?PG_Id=$property[PGID]' class='title tran
                                             3s'>$property[PG_Title]</a>
                                             <div class='address'>" . substr($property['PG_Address'], 0, 140) . "...</div>
                                             <ul class='style-none feature d-flex flex-wrap align-items-center justify-content-between'>

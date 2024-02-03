@@ -11,10 +11,9 @@
 }
 
 .listimg{
- 
-  width: 20px;
+  
+  width: 100px;
   height: 100px;
-
 }
 
 ::-webkit-scrollbar-thumb {
@@ -5127,7 +5126,7 @@ iframe {
   margin-bottom: 22px;
 }
 .list-style-one li:before {
-  content: "\f00c";
+  content: " ";
   font-family: "Font Awesome 6 Pro";
   position: absolute;
   left: 0;
@@ -5144,7 +5143,7 @@ iframe {
   color: #000;
 }
 .list-style-two li:before {
-  content: "\f00c";
+  content: " ";
   font-family: "Font Awesome 6 Pro";
   position: absolute;
   left: 0;
@@ -7496,7 +7495,7 @@ iframe {
   color: #000;
 }
 .pricing-section-two .pr-column-wrapper ul li:before {
-  content: "\f00c";
+  content: " ";
   font-family: "Font Awesome 6 Pro";
   position: absolute;
   left: 0;
@@ -8701,7 +8700,7 @@ iframe {
   margin-bottom: 25px;
 }
 .blog-details .blog-post-meta .post-data .list-item li:after {
-  content: "\f00c";
+  content: " ";
   font-family: "Font Awesome 6 Pro";
   position: absolute;
   left: 0;
@@ -9435,7 +9434,7 @@ iframe {
   transition: all 0.1s ease-in-out;
 }
 .user-data-form .agreement-checkbox input[type=checkbox]:checked + label:before {
-  content: "\f00c";
+  content: " ";
   font-family: "Font Awesome 6 Pro";
   background: #000;
   color: #fff;

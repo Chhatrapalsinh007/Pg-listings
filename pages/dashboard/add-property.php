@@ -26,16 +26,19 @@ if (isset($_POST['submit'])) {
 	$PropertyApprovalstatus = 'Under Process';
 	$PropertyKitchens = $_POST['PropertyKitchens'];
 
-	$Wifi = isset($_POST['Wifi']) ? $_POST['Wifi'] : '0';
-	$AC = isset($_POST['AC']) ? $_POST['AC'] : '0';
-	$Geyser = isset($_POST['Geyser']) ? $_POST['Geyser'] : '0';
-	$TV = isset($_POST['TV']) ? $_POST['TV'] : '0';
-	$Parking = isset($_POST['Parking']) ? $_POST['Parking'] : '0';
-	$Laundry = isset($_POST['Laundry']) ? $_POST['Laundry'] : '0';
-	$VisitorsAllowed = isset($_POST['VisitorsAllowed']) ? $_POST['VisitorsAllowed'] : '0';
-	$Elevator = isset($_POST['Elevator']) ? $_POST['Elevator'] : '0';
-	$Refrigerator = isset($_POST['Refrigerator']) ? $_POST['Refrigerator'] : '0';
-	$CCTV = isset($_POST['CCTV']) ? $_POST['CCTV'] : '0';
+
+	$Wifi = (isset($_POST['Wifi']) && $_POST['Wifi'] === "WIFI") ? '1' : '0';
+	$AC = (isset($_POST['AC']) && $_POST['AC'] === "AC") ? '1' : '0';
+	$Geyser = (isset($_POST['Geyser']) && $_POST['Geyser'] === "Geyser") ? '1' : '0';
+	$TV = (isset($_POST['TV']) && $_POST['TV'] === "TV") ? '1' : '0';
+	$Parking = (isset($_POST['Parking']) && $_POST['Parking'] === "Parking") ? '1' : '0';
+	$Laundry = (isset($_POST['Laundry']) && $_POST['Laundry'] === "Laundry") ? '1' : '0';
+	$VisitorsAllowed = (isset($_POST['VisitorsAllowed']) && $_POST['VisitorsAllowed'] === "VisitorsAllowed") ? '1' : '0';
+	$Elevator = (isset($_POST['Elevator']) && $_POST['Elevator'] === "Elevator") ? '1' : '0';
+	$Refrigerator = (isset($_POST['Refrigerator']) && $_POST['Refrigerator'] === "Refrigerator") ? '1' : '0';
+	$CCTV = (isset($_POST['CCTV']) && $_POST['CCTV'] === "CCTV") ? '1' : '0';
+
+	
 	$PropertyAddress = $_POST['PropertyAddress'];
 	$PropertyCity = $_POST['PropertyCity'];
 	$PropertyState = $_POST['PropertyState'];
@@ -441,7 +444,7 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Bedrooms*</label>
 								<select class="nice-select" name="PropertyBedrooms">
-									<option value="0">0</option>
+									
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -453,7 +456,7 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Beds*</label>
 								<select class="nice-select" name="PropertyBeds">
-									<option value="0">0</option>
+									
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -480,7 +483,7 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Bathrooms*</label>
 								<select class="nice-select" name="PropertyBathrooms">
-									<option value="0">0</option>
+									
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
