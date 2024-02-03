@@ -668,28 +668,4 @@ $(window).on ('load', function (){ // makes sure the whole site is loaded
 })(jQuery);
 
 
-
-//Temporary Login Validation
-
-document.addEventListener('DOMContentLoaded', function() {
-  //Passing the form id to a variable
-  var loginForm = document.querySelector('#loginForm');
-
-  loginForm.addEventListener('submit', function(event) {
-      // Prevent the default form submission
-      event.preventDefault();
-
-      // Assuming your email input field has an id of 'emailField' and password field has an id of 'passwordField'
-      var email = document.querySelector('#emailField').value;
-      var password = document.querySelector('#passwordField').value;
-
-      // Check if the credentials match
-      if(email === 'admin@gmail.com' && password === '123') {
-          // Redirect to the desired page
-          window.location.href = '../pages/dashboard/dashboard.html';
-      } else {
-          // Show an error message or handle invalid credentials
-          alert('Invalid username or password');
-      }
-  });
-});
+// ------------------------ Map Function

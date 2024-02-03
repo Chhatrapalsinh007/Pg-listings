@@ -58,24 +58,24 @@
 		<aside class="dash-aside-navbar">
 			<div class="position-relative">
 				<div class="logo d-md-block d-flex align-items-center justify-content-between plr bottom-line pb-30">
-					<a href="dashboard-index.html">
+					<a href="dashboard.php">
 						<img src="../images/logo/logo_01.svg" alt="">
 					</a>
 					<button class="close-btn d-block d-md-none"><i class="fa-light fa-circle-xmark"></i></button>
 				</div>
 				<nav class="dasboard-main-nav pt-30 pb-30 bottom-line">
 					<ul class="style-none">
-						<li class="plr"><a href="dashboard-index.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="dashboard.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_1.svg" alt="">
 							<span>Dashboard</span>
 						</a></li>
-						<li class="plr"><a href="message.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="message.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_2.svg" alt="">
 							<span>Message</span>
 						</a></li>
 						<li class="bottom-line pt-30 lg-pt-20 mb-40 lg-mb-30"></li>
 						<li><div class="nav-title">Profile</div></li>
-						<li class="plr"><a href="profile.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="profile.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_3.svg" alt="">
 							<span>Profile</span>
 						</a></li>
@@ -83,29 +83,29 @@
 							<img src="images/icon/icon_4_active.svg" alt="">
 							<span>Account Settings</span>
 						</a></li>
-						<li class="plr"><a href="membership.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="membership.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_5.svg" alt="">
 							<span>Membership</span>
 						</a></li>
 						<li class="bottom-line pt-30 lg-pt-20 mb-40 lg-mb-30"></li>
 						<li><div class="nav-title">Listing</div></li>
-						<li class="plr"><a href="properties-list.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="properties-list.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_6.svg" alt="">
 							<span>My Properties</span>
 						</a></li>
-						<li class="plr"><a href="add-property.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="add-property.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_7.svg" alt="">
 							<span>Add New Property</span>
 						</a></li>
-						<li class="plr"><a href="favourites.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="favourites.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_8.svg" alt="">
 							<span>Favourites</span>
 						</a></li>
-						<li class="plr"><a href="saved-search.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="saved-search.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_9.svg" alt="">
 							<span>Saved Search</span>
 						</a></li>
-						<li class="plr"><a href="review.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="review.php" class="d-flex w-100 align-items-center">
 							<img src="images/icon/icon_10.svg" alt="">
 							<span>Reviews</span>
 						</a></li>
@@ -122,7 +122,7 @@
 				<!-- /.profile-complete-status -->
 
 				<div class="plr">
-					<a href="#" class="d-flex w-100 align-items-center logout-btn">
+					<a href="../sign-up_in-handler/logout_button.php"" class="d-flex w-100 align-items-center logout-btn">
 						<div class="icon tran3s d-flex align-items-center justify-content-center rounded-circle"><img src="images/icon/icon_41.svg" alt=""></div>
 						<span>Logout</span>
 					</a>
@@ -184,7 +184,7 @@
 							</ul>
 						</div>
 						<div class="d-none d-md-block me-3">
-							<a href="add-property.html" class="btn-two"><span>Add Listing</span> <i class="fa-thin fa-arrow-up-right"></i></a>
+							<a href="add-property.php" class="btn-two"><span>Add Listing</span> <i class="fa-thin fa-arrow-up-right"></i></a>
 						</div>
 						<div class="user-data position-relative">
 							<button class="user-avatar online position-relative rounded-circle dropdown-toggle" type="button" id="profile-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -194,10 +194,10 @@
 							<div class="user-name-data">
 								<ul class="dropdown-menu" aria-labelledby="profile-dropdown">
 									<li>
-										<a class="dropdown-item d-flex align-items-center" href="profile.html"><img src="../images/lazy.svg" data-src="images/icon/icon_23.svg" alt="" class="lazy-img"><span class="ms-2 ps-1">Profile</span></a>
+										<a class="dropdown-item d-flex align-items-center" href="profile.php"><img src="../images/lazy.svg" data-src="images/icon/icon_23.svg" alt="" class="lazy-img"><span class="ms-2 ps-1">Profile</span></a>
 									</li>
 									<li>
-										<a class="dropdown-item d-flex align-items-center" href="account-settings.html"><img src="../images/lazy.svg" data-src="images/icon/icon_24.svg" alt="" class="lazy-img"><span class="ms-2 ps-1">Account Settings</span></a>
+										<a class="dropdown-item d-flex align-items-center" href="account-settings.php"><img src="../images/lazy.svg" data-src="images/icon/icon_24.svg" alt="" class="lazy-img"><span class="ms-2 ps-1">Account Settings</span></a>
 									</li>
 									<li>
 										<a class="dropdown-item d-flex align-items-center" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"><img src="../images/lazy.svg" data-src="images/icon/icon_25.svg" alt="" class="lazy-img"><span class="ms-2 ps-1">Delete Account</span></a>
@@ -250,8 +250,8 @@
                                     <input type="password">
 
                                     <div class="info-text d-sm-flex align-items-center justify-content-between mt-5">
-                                        <p class="m0">Want to change the password? <a href="account-settings(pass-change).html">Click here</a></p>
-                                        <a href="account-settings(pass-change).html" class="chng-pass">Change Password</a>
+                                        <p class="m0">Want to change the password? <a href="account-settings(pass-change).php">Click here</a></p>
+                                        <a href="account-settings(pass-change).php" class="chng-pass">Change Password</a>
                                     </div>
                                 </div>
                                 <!-- /.dash-input-wrapper -->

@@ -1,3 +1,39 @@
+<?php
+
+// Include the database connection
+include '../db_connect.php';
+
+
+$PGID = $_GET['id'];
+
+print "<script>console.log('PGID: " . $PGID . "');</script>";
+
+// Fetch the PG details
+try {
+    $stmt = $conn->prepare("SELECT * FROM pg_listings WHERE PGID = :pgid");
+    $stmt->bindParam(':pgid', $PGID);
+    $stmt->execute();
+    $pgdetails = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+
+    $stmt = $conn->prepare("SELECT * FROM pg_listings INNER JOIN pg_owners ON pg_listings.OwnerID = pg_owners.OwnerID WHERE PGID = :pgid");
+
+    $stmt->bindParam(':pgid', $PGID);
+    $stmt->execute();
+    $ownerdetails = $stmt->fetch(PDO::FETCH_ASSOC);
+
+
+    //print the details of the owner and the pg in the console log
+
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,23 +87,19 @@
                         <div class="right-widget ms-auto ms-lg-0 me-3 me-lg-0 order-lg-3">
                             <ul class="d-flex align-items-center style-none">
                                 <li>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn-one"><i
-                                            class="fa-regular fa-lock"></i> <span>Login / Sign Up</span></a>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn-one"><i class="fa-regular fa-lock"></i> <span>Login / Sign Up</span></a>
                                 </li>
 
                             </ul>
                         </div>
                         <nav class="navbar navbar-expand-lg p0 order-lg-2">
-                            <button class="navbar-toggler d-block d-lg-none" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                                aria-label="Toggle navigation">
+                            <button class="navbar-toggler d-block d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                                 <span></span>
                             </button>
                             <div class="collapse navbar-collapse" id="navbarNav">
                                 <ul class="navbar-nav align-items-lg-center">
                                     <li class="d-block d-lg-none">
-                                        <div class="logo"><a href="../index.php" class="d-block"><img
-                                                    src="../images/logo/logo_01.svg" alt=""></a></div>
+                                        <div class="logo"><a href="../index.php" class="d-block"><img src="../images/logo/logo_01.svg" alt=""></a></div>
                                     </li>
 
 
@@ -93,9 +125,7 @@
                                     </li>
 
                                     <li class="d-md-none ps-2 pe-2 mt-20">
-                                        <a href="dashboard/add-property.html" class="btn-two w-100"
-                                            target="_blank"><span>Add Listing</span> <i
-                                                class="fa-thin fa-arrow-up-right"></i></a>
+                                        <a href="dashboard/add-property.html" class="btn-two w-100" target="_blank"><span>Add Listing</span> <i class="fa-thin fa-arrow-up-right"></i></a>
                                     </li>
                                 </ul>
                             </div>
@@ -123,30 +153,21 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-6">
-                        <h3 class="property-titlee">Luxury Apartments on California.</h3>
+                        <h3 class="property-titlee"><?php echo htmlspecialchars($pgdetails['PG_Title']); ?></h3>
                         <div class="d-flex flex-wrap mt-10">
-                            <div class="list-type text-uppercase border-20 mt-15 me-3">FOR SELL</div>
-                            <div class="address mt-15"><i class="bi bi-geo-alt"></i> 3891 Ranchview Dr. Richardson,
-                                California</div>
+                            <div class="list-type text-uppercase border-20 mt-15 me-3"> <?php echo htmlspecialchars($pgdetails['PG_For']); ?></div>
+                            <div class="address mt-15"><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($pgdetails['PG_Address']); ?></div>
                         </div>
                     </div>
                     <div class="col-lg-6 text-lg-end">
                         <div class="d-inline-block md-mt-40">
-                            <div class="price color-dark fw-500">Price: $1,67,000</div>
-                            <div class="est-price fs-20 mt-25 mb-35 md-mb-30">Est. Payment <span
-                                    class="fw-500 color-dark">$8,343/mo*</span></div>
+                            <div class="price color-dark fw-500">₹<?php echo htmlspecialchars($pgdetails['PG_Rent']); ?></div>
+
                             <ul class="style-none d-flex align-items-center action-btns">
-                                <li class="me-auto fw-500 color-dark"><i
-                                        class="fa-sharp fa-regular fa-share-nodes me-2"></i> Share</li>
-                                <li><a href="#"
-                                        class="d-flex align-items-center justify-content-center rounded-circle tran3s"><i
-                                            class="fa-light fa-heart"></i></a></li>
-                                <li><a href="#"
-                                        class="d-flex align-items-center justify-content-center rounded-circle tran3s"><i
-                                            class="fa-light fa-bookmark"></i></a></li>
-                                <li><a href="#"
-                                        class="d-flex align-items-center justify-content-center rounded-circle tran3s"><i
-                                            class="fa-light fa-circle-plus"></i></a></li>
+
+
+                                <li><a href="#" class="d-flex align-items-center justify-content-center rounded-circle tran3s"><i class="fa-light fa-bookmark"></i></a></li>
+
                             </ul>
                         </div>
                     </div>
@@ -157,35 +178,26 @@
                             <div class="bg-white shadow4 border-20 p-30 md-mb-20">
                                 <div class="position-relative z-1 overflow-hidden border-20">
                                     <div class="img-fancy-btn border-10 fw-500 fs-16 color-dark">
-                                        Sell all 37 Photos
-                                        <a href="../images/listing/img_large_01.jpg" class="d-block"
-                                            data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
-                                        <a href="../images/listing/img_large_02.jpg" class="d-block"
-                                            data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
-                                        <a href="../images/listing/img_large_03.jpg" class="d-block"
-                                            data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
+
+                                        <a href="../images/listing/img-1.jpg" class="d-block" data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
+                                        <a href="../images/listing/img-2.jpg" class="d-block" data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
+                                        <a href="../images/listing/img-3.jpg" class="d-block" data-fancybox="mainImg" data-caption="Duplex orkit villa."></a>
                                     </div>
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <img src="../images/listing/img_43.jpg" alt="" class="border-20 w-100">
+                                            <img src="../images/listing/img-2.jpg" alt="" class="border-20 w-100">
                                         </div>
                                         <div class="carousel-item">
-                                            <img src="../images/listing/img_44.jpg" alt="" class="border-20 w-100">
+                                            <img src="../images/listing/img-1.jpg" alt="" class="border-20 w-100">
                                         </div>
-                                        <div class="carousel-item">
-                                            <img src="../images/listing/img_45.jpg" alt="" class="border-20 w-100">
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="../images/listing/img_46.jpg" alt="" class="border-20 w-100">
-                                        </div>
+
+
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#media_slider"
-                                        data-bs-slide="prev">
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#media_slider" data-bs-slide="prev">
                                         <i class="bi bi-chevron-left"></i>
                                         <span class="visually-hidden">Previous</span>
                                     </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#media_slider"
-                                        data-bs-slide="next">
+                                    <button class="carousel-control-next" type="button" data-bs-target="#media_slider" data-bs-slide="next">
                                         <i class="bi bi-chevron-right"></i>
                                         <span class="visually-hidden">Next</span>
                                     </button>
@@ -193,24 +205,15 @@
                             </div>
                         </div>
                         <div class="col-lg-2">
-                            <div
-                                class="carousel-indicators position-relative border-15 bg-white shadow4 p-15 w-100 h-100">
-                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="0" class="active"
-                                    aria-current="true" aria-label="Slide 1">
-                                    <img src="../images/listing/img_43_s.jpg" alt="" class="border-10 w-100">
+                            <div class="carousel-indicators position-relative border-15 bg-white shadow4 p-15 w-100 h-100">
+                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1">
+                                    <img src="../images/listing/img-2.jpg" alt="" class="border-10 w-100">
                                 </button>
-                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="1"
-                                    aria-label="Slide 2">
-                                    <img src="../images/listing/img_44_s.jpg" alt="" class="border-10 w-100">
+                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="1" aria-label="Slide 2">
+                                    <img src="../images/listing/img-1.jpg" alt="" class="border-10 w-100">
                                 </button>
-                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="2"
-                                    aria-label="Slide 3">
-                                    <img src="../images/listing/img_45_s.jpg" alt="" class="border-10 w-100">
-                                </button>
-                                <button type="button" data-bs-target="#media_slider" data-bs-slide-to="3"
-                                    aria-label="Slide 4">
-                                    <img src="../images/listing/img_46_s.jpg" alt="" class="border-10 w-100">
-                                </button>
+
+
                             </div>
                         </div>
                     </div>
@@ -220,29 +223,24 @@
                     <h4 class="sub-title-one mb-40 lg-mb-20">Property Overview</h4>
                     <ul class="style-none d-flex flex-wrap align-items-center justify-content-between">
                         <li>
-                            <img src="../images/lazy.svg" data-src="../images/icon/icon_47.svg" alt=""
-                                class="lazy-img icon">
-                            <span class="fs-20 color-dark">Sqft . 3,720</span>
+                            <img src="../images/lazy.svg" data-src="../images/icon/icon_47.svg" alt="" class="lazy-img icon">
+                            <span class="fs-20 color-dark"><?php echo htmlspecialchars($pgdetails['PG_Size_sqft']); ?> sqft</span>
                         </li>
                         <li>
-                            <img src="../images/lazy.svg" data-src="../images/icon/icon_48.svg" alt=""
-                                class="lazy-img icon">
-                            <span class="fs-20 color-dark">Bed . 03</span>
+                            <img src="../images/lazy.svg" data-src="../images/icon/icon_48.svg" alt="" class="lazy-img icon">
+                            <span class="fs-20 color-dark"><?php echo htmlspecialchars($pgdetails['PG_Beds']); ?> Bedrooms</span>
                         </li>
                         <li>
-                            <img src="../images/lazy.svg" data-src="../images/icon/icon_49.svg" alt=""
-                                class="lazy-img icon">
-                            <span class="fs-20 color-dark">Bath . 2</span>
+                            <img src="../images/lazy.svg" data-src="../images/icon/icon_49.svg" alt="" class="lazy-img icon">
+                            <span class="fs-20 color-dark"><?php echo htmlspecialchars($pgdetails['PG_Bathrooms']); ?> Bathrooms</span>
                         </li>
                         <li>
-                            <img src="../images/lazy.svg" data-src="../images/icon/icon_50.svg" alt=""
-                                class="lazy-img icon">
-                            <span class="fs-20 color-dark">Kitchen . 01</span>
+                            <img src="../images/lazy.svg" data-src="../images/icon/icon_50.svg" alt="" class="lazy-img icon">
+                            <span class="fs-20 color-dark">Kitchen <?php echo htmlspecialchars($pgdetails['PG_Kitchens']); ?></span>
                         </li>
                         <li>
-                            <img src="../images/lazy.svg" data-src="../images/icon/icon_51.svg" alt=""
-                                class="lazy-img icon">
-                            <span class="fs-20 color-dark">Type . Apartment</span>
+                            <img src="../images/lazy.svg" data-src="../images/icon/icon_51.svg" alt="" class="lazy-img icon">
+                            <span class="fs-20 color-dark">Type . <?php echo htmlspecialchars($pgdetails['PG_Category']); ?></span>
                         </li>
                     </ul>
                 </div>
@@ -251,9 +249,7 @@
                     <div class="col-xl-8">
                         <div class="property-overview bg-white shadow4 border-20 p-40 mb-50">
                             <h4 class="mb-20">Overview</h4>
-                            <p class="fs-20 lh-lg">Lorem ipsum dolor sit amet consectetur. Et velit varius ipsum tempor
-                                vel dignissim tincidunt. Aliquam accumsan laoreet ultricies tincidunt faucibus fames
-                                augue in sociis. Nisl enim integer neque nec.</p>
+                            <p class="fs-20 lh-lg"><?php echo htmlspecialchars($pgdetails['PG_Description']); ?></p>
                         </div>
                         <!-- /.property-overview -->
                         <div class="property-feature-accordion bg-white shadow4 border-20 p-40 mb-50">
@@ -265,35 +261,23 @@
                                 <div class="accordion" id="accordionTwo">
                                     <div class="accordion-item">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#collapseOneA" aria-expanded="false"
-                                                aria-controls="collapseOneA">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneA" aria-expanded="false" aria-controls="collapseOneA">
                                                 Property Details
                                             </button>
                                         </h2>
-                                        <div id="collapseOneA" class="accordion-collapse collapse show"
-                                            data-bs-parent="#accordionTwo">
+                                        <div id="collapseOneA" class="accordion-collapse collapse show" data-bs-parent="#accordionTwo">
                                             <div class="accordion-body">
                                                 <div class="feature-list-two">
                                                     <ul class="style-none d-flex flex-wrap justify-content-between">
-                                                        <li><span>Bedrooms: </span> <span
-                                                                class="fw-500 color-dark">03</span></li>
-                                                        <li><span>Furnishing: </span> <span
-                                                                class="fw-500 color-dark">Semi furnished</span></li>
-                                                        <li><span>Bathrooms: </span> <span
-                                                                class="fw-500 color-dark">02</span></li>
-                                                        <li><span>Year Built: </span> <span
-                                                                class="fw-500 color-dark">2010</span></li>
-                                                        <li><span>Floor: </span> <span
-                                                                class="fw-500 color-dark">Ground</span></li>
-                                                        <li><span>Garage: </span> <span
-                                                                class="fw-500 color-dark">03</span></li>
-                                                        <li><span>Ceiling Height: </span> <span
-                                                                class="fw-500 color-dark">3.2m</span></li>
-                                                        <li><span>Property Type: </span> <span
-                                                                class="fw-500 color-dark">Apartment</span></li>
-                                                        <li><span>Renovation: </span> <span
-                                                                class="fw-500 color-dark">3.2m</span></li>
+                                                        <li><span>Bedrooms: </span> <span class="fw-500 color-dark">03</span></li>
+                                                        <li><span>Furnishing: </span> <span class="fw-500 color-dark">Semi furnished</span></li>
+                                                        <li><span>Bathrooms: </span> <span class="fw-500 color-dark">02</span></li>
+                                                        <li><span>Year Built: </span> <span class="fw-500 color-dark">2010</span></li>
+                                                        <li><span>Floor: </span> <span class="fw-500 color-dark">Ground</span></li>
+                                                        <li><span>Garage: </span> <span class="fw-500 color-dark">03</span></li>
+                                                        <li><span>Ceiling Height: </span> <span class="fw-500 color-dark">3.2m</span></li>
+                                                        <li><span>Property Type: </span> <span class="fw-500 color-dark">Apartment</span></li>
+                                                        <li><span>Renovation: </span> <span class="fw-500 color-dark">3.2m</span></li>
                                                         <li><span>Status: </span> <span class="fw-500 color-dark">For
                                                                 Sale</span></li>
                                                     </ul>
@@ -304,35 +288,23 @@
                                     </div>
                                     <div class="accordion-item">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseTwoA"
-                                                aria-expanded="false" aria-controls="collapseTwoA">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoA" aria-expanded="false" aria-controls="collapseTwoA">
                                                 Utility Details
                                             </button>
                                         </h2>
-                                        <div id="collapseTwoA" class="accordion-collapse collapse"
-                                            data-bs-parent="#accordionTwo">
+                                        <div id="collapseTwoA" class="accordion-collapse collapse" data-bs-parent="#accordionTwo">
                                             <div class="accordion-body">
                                                 <div class="feature-list-two">
                                                     <ul class="style-none d-flex flex-wrap justify-content-between">
-                                                        <li><span>Heating: </span> <span
-                                                                class="fw-500 color-dark">Natural gas </span></li>
-                                                        <li><span>Intercom: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>Air Condition: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>Window Type: </span> <span
-                                                                class="fw-500 color-dark">Aluminum frame </span></li>
-                                                        <li><span>Fireplace: </span> <span
-                                                                class="fw-500 color-dark">--</span></li>
-                                                        <li><span>Cable TV: </span> <span
-                                                                class="fw-500 color-dark">--</span></li>
-                                                        <li><span>Elevator: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>WiFi: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>Ventilation: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Heating: </span> <span class="fw-500 color-dark">Natural gas </span></li>
+                                                        <li><span>Intercom: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Air Condition: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Window Type: </span> <span class="fw-500 color-dark">Aluminum frame </span></li>
+                                                        <li><span>Fireplace: </span> <span class="fw-500 color-dark">--</span></li>
+                                                        <li><span>Cable TV: </span> <span class="fw-500 color-dark">--</span></li>
+                                                        <li><span>Elevator: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>WiFi: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Ventilation: </span> <span class="fw-500 color-dark">Yes</span></li>
                                                     </ul>
                                                 </div>
                                                 <!-- /.feature-list-two -->
@@ -341,33 +313,23 @@
                                     </div>
                                     <div class="accordion-item">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseThreeA"
-                                                aria-expanded="true" aria-controls="collapseThreeA">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThreeA" aria-expanded="true" aria-controls="collapseThreeA">
                                                 Outdoor Features
                                             </button>
                                         </h2>
-                                        <div id="collapseThreeA" class="accordion-collapse collapse"
-                                            data-bs-parent="#accordionTwo">
+                                        <div id="collapseThreeA" class="accordion-collapse collapse" data-bs-parent="#accordionTwo">
                                             <div class="accordion-body">
                                                 <div class="feature-list-two">
                                                     <ul class="style-none d-flex flex-wrap justify-content-between">
-                                                        <li><span>Garage: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>Parking: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
-                                                        <li><span>Garden: </span> <span
-                                                                class="fw-500 color-dark">30m2</span></li>
-                                                        <li><span>Disabled Access: </span> <span
-                                                                class="fw-500 color-dark">Ramp</span></li>
-                                                        <li><span>Swimming Pool: </span> <span
-                                                                class="fw-500 color-dark">--</span></li>
-                                                        <li><span>Fence: </span> <span
-                                                                class="fw-500 color-dark">--</span></li>
+                                                        <li><span>Garage: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Parking: </span> <span class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Garden: </span> <span class="fw-500 color-dark">30m2</span></li>
+                                                        <li><span>Disabled Access: </span> <span class="fw-500 color-dark">Ramp</span></li>
+                                                        <li><span>Swimming Pool: </span> <span class="fw-500 color-dark">--</span></li>
+                                                        <li><span>Fence: </span> <span class="fw-500 color-dark">--</span></li>
                                                         <li><span>Security: </span> <span class="fw-500 color-dark">3
                                                                 Cameras</span></li>
-                                                        <li><span>Pet Friendly: </span> <span
-                                                                class="fw-500 color-dark">Yes</span></li>
+                                                        <li><span>Pet Friendly: </span> <span class="fw-500 color-dark">Yes</span></li>
                                                     </ul>
                                                 </div>
                                                 <!-- /.feature-list-two -->
@@ -404,10 +366,8 @@
                             <h4 class="mb-40">Video Tour</h4>
                             <div class="bg-white shadow4 border-20 p-15">
                                 <div class="position-relative border-15 image-bg overflow-hidden z-1">
-                                    <img src="../images/lazy.svg" data-src="../images/listing/img_47.jpg" alt=""
-                                        class="lazy-img w-100">
-                                    <a class="video-icon tran3s rounded-circle d-flex align-items-center justify-content-center"
-                                        data-fancybox href="https://www.youtube.com/embed/aXFSJTjVjw0">
+                                    <img src="../images/lazy.svg" data-src="../images/listing/img_47.jpg" alt="" class="lazy-img w-100">
+                                    <a class="video-icon tran3s rounded-circle d-flex align-items-center justify-content-center" data-fancybox href="https://www.youtube.com/embed/aXFSJTjVjw0">
                                         <i class="fa-thin fa-play"></i>
                                     </a>
                                 </div>
@@ -420,12 +380,9 @@
                             <div class="bg-white shadow4 border-20 p-30">
                                 <div id="floor-plan" class="carousel slide">
                                     <div class="carousel-indicators">
-                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="0"
-                                            class="active" aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="1"
-                                            aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="2"
-                                            aria-label="Slide 3"></button>
+                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#floor-plan" data-bs-slide-to="2" aria-label="Slide 3"></button>
                                     </div>
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
@@ -472,19 +429,13 @@
                                         <div class="img-gallery p-15">
                                             <div class="position-relative border-20 overflow-hidden">
                                                 <div class="tag bg-white text-dark fw-500 border-20">FOR RENT</div>
-                                                <img src="../images/listing/img_13.jpg" class="w-100 border-20"
-                                                    alt="...">
-                                                <a href="listing_details_06.html"
-                                                    class="btn-four inverse rounded-circle position-absolute"><i
-                                                        class="bi bi-arrow-up-right"></i></a>
+                                                <img src="../images/listing/img_13.jpg" class="w-100 border-20" alt="...">
+                                                <a href="listing_details_06.html" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
                                                 <div class="img-slider-btn">
                                                     03 <i class="fa-regular fa-image"></i>
-                                                    <a href="../images/listing/img_large_01.jpg" class="d-block"
-                                                        data-fancybox="img1" data-caption="Blueberry villa"></a>
-                                                    <a href="../images/listing/img_large_02.jpg" class="d-block"
-                                                        data-fancybox="img1" data-caption="Blueberry villa"></a>
-                                                    <a href="../images/listing/img_large_03.jpg" class="d-block"
-                                                        data-fancybox="img1" data-caption="Blueberry villa"></a>
+                                                    <a href="../images/listing/img_large_01.jpg" class="d-block" data-fancybox="img1" data-caption="Blueberry villa"></a>
+                                                    <a href="../images/listing/img_large_02.jpg" class="d-block" data-fancybox="img1" data-caption="Blueberry villa"></a>
+                                                    <a href="../images/listing/img_large_03.jpg" class="d-block" data-fancybox="img1" data-caption="Blueberry villa"></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -510,19 +461,13 @@
                                         <div class="img-gallery p-15">
                                             <div class="position-relative border-20 overflow-hidden">
                                                 <div class="tag bg-white text-dark fw-500 border-20">FOR SELL</div>
-                                                <img src="../images/listing/img_14.jpg" class="w-100 border-20"
-                                                    alt="...">
-                                                <a href="listing_details_06.html"
-                                                    class="btn-four inverse rounded-circle position-absolute"><i
-                                                        class="bi bi-arrow-up-right"></i></a>
+                                                <img src="../images/listing/img_14.jpg" class="w-100 border-20" alt="...">
+                                                <a href="listing_details_06.html" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
                                                 <div class="img-slider-btn">
                                                     03 <i class="fa-regular fa-image"></i>
-                                                    <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                        data-fancybox="img2" data-caption="White House villa"></a>
-                                                    <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                        data-fancybox="img2" data-caption="White House villa"></a>
-                                                    <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                        data-fancybox="img2" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="img2" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="img2" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="img2" data-caption="White House villa"></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -548,25 +493,14 @@
                                         <div class="img-gallery p-15">
                                             <div class="position-relative border-20 overflow-hidden">
                                                 <div class="tag bg-white text-dark fw-500 border-20">FOR SELL</div>
-                                                <img src="../images/listing/img_15.jpg" class="w-100 border-20"
-                                                    alt="...">
-                                                <a href="listing_details_06.html"
-                                                    class="btn-four inverse rounded-circle position-absolute"><i
-                                                        class="bi bi-arrow-up-right"></i></a>
+                                                <img src="../images/listing/img_15.jpg" class="w-100 border-20" alt="...">
+                                                <a href="listing_details_06.html" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
                                                 <div class="img-slider-btn">
                                                     04 <i class="fa-regular fa-image"></i>
-                                                    <a href="../images/listing/img_large_01.jpg" class="d-block"
-                                                        data-fancybox="img3"
-                                                        data-caption="Luxury villa in Dal lake."></a>
-                                                    <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                        data-fancybox="img3"
-                                                        data-caption="Luxury villa in Dal lake."></a>
-                                                    <a href="../images/listing/img_large_03.jpg" class="d-block"
-                                                        data-fancybox="img3"
-                                                        data-caption="Luxury villa in Dal lake."></a>
-                                                    <a href="../images/listing/img_large_02.jpg" class="d-block"
-                                                        data-fancybox="img3"
-                                                        data-caption="Luxury villa in Dal lake."></a>
+                                                    <a href="../images/listing/img_large_01.jpg" class="d-block" data-fancybox="img3" data-caption="Luxury villa in Dal lake."></a>
+                                                    <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="img3" data-caption="Luxury villa in Dal lake."></a>
+                                                    <a href="../images/listing/img_large_03.jpg" class="d-block" data-fancybox="img3" data-caption="Luxury villa in Dal lake."></a>
+                                                    <a href="../images/listing/img_large_02.jpg" class="d-block" data-fancybox="img3" data-caption="Luxury villa in Dal lake."></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -592,21 +526,14 @@
                                         <div class="img-gallery p-15">
                                             <div class="position-relative border-20 overflow-hidden">
                                                 <div class="tag bg-white text-dark fw-500 border-20">FOR SELL</div>
-                                                <img src="../images/listing/img_16.jpg" class="w-100 border-20"
-                                                    alt="...">
-                                                <a href="listing_details_06.html"
-                                                    class="btn-four inverse rounded-circle position-absolute"><i
-                                                        class="bi bi-arrow-up-right"></i></a>
+                                                <img src="../images/listing/img_16.jpg" class="w-100 border-20" alt="...">
+                                                <a href="listing_details_06.html" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
                                                 <div class="img-slider-btn">
                                                     04 <i class="fa-regular fa-image"></i>
-                                                    <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                        data-fancybox="img4" data-caption="South Sun House"></a>
-                                                    <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                        data-fancybox="img4" data-caption="South Sun House"></a>
-                                                    <a href="../images/listing/img_large_03.jpg" class="d-block"
-                                                        data-fancybox="img4" data-caption="South Sun House"></a>
-                                                    <a href="../images/listing/img_large_02.jpg" class="d-block"
-                                                        data-fancybox="img4" data-caption="South Sun House"></a>
+                                                    <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="img4" data-caption="South Sun House"></a>
+                                                    <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="img4" data-caption="South Sun House"></a>
+                                                    <a href="../images/listing/img_large_03.jpg" class="d-block" data-fancybox="img4" data-caption="South Sun House"></a>
+                                                    <a href="../images/listing/img_large_02.jpg" class="d-block" data-fancybox="img4" data-caption="South Sun House"></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -632,19 +559,13 @@
                                         <div class="img-gallery p-15">
                                             <div class="position-relative border-20 overflow-hidden">
                                                 <div class="tag bg-white text-dark fw-500 border-20">FOR SELL</div>
-                                                <img src="../images/listing/img_14.jpg" class="w-100 border-20"
-                                                    alt="...">
-                                                <a href="listing_details_06.html"
-                                                    class="btn-four inverse rounded-circle position-absolute"><i
-                                                        class="bi bi-arrow-up-right"></i></a>
+                                                <img src="../images/listing/img_14.jpg" class="w-100 border-20" alt="...">
+                                                <a href="listing_details_06.html" class="btn-four inverse rounded-circle position-absolute"><i class="bi bi-arrow-up-right"></i></a>
                                                 <div class="img-slider-btn">
                                                     03 <i class="fa-regular fa-image"></i>
-                                                    <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                        data-fancybox="img5" data-caption="White House villa"></a>
-                                                    <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                        data-fancybox="img5" data-caption="White House villa"></a>
-                                                    <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                        data-fancybox="img5" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="img5" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="img5" data-caption="White House villa"></a>
+                                                    <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="img5" data-caption="White House villa"></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -676,8 +597,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="block d-flex align-items-center mb-50 sm-mb-30">
-                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_52.svg" alt=""
-                                            class="lazy-img icon">
+                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_52.svg" alt="" class="lazy-img icon">
                                         <div class="text">
                                             <h6>Transit Score</h6>
                                             <p class="fs-16 m0"><span class="color-dark">63</span>/100 (Moderate
@@ -687,8 +607,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="block d-flex align-items-center mb-50 sm-mb-30">
-                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_53.svg" alt=""
-                                            class="lazy-img icon">
+                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_53.svg" alt="" class="lazy-img icon">
                                         <div class="text">
                                             <h6>School Score</h6>
                                             <p class="fs-16 m0"><span class="color-dark">70</span>/100 (Short Distance
@@ -698,8 +617,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="block d-flex align-items-center mb-20 sm-mb-30">
-                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_54.svg" alt=""
-                                            class="lazy-img icon">
+                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_54.svg" alt="" class="lazy-img icon">
                                         <div class="text">
                                             <h6>Medical Score</h6>
                                             <p class="fs-16 m0"><span class="color-dark">77</span>/100 (Short Distance
@@ -709,8 +627,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="block d-flex align-items-center mb-20">
-                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_55.svg" alt=""
-                                            class="lazy-img icon">
+                                        <img src="../images/lazy.svg" data-src="../images/icon/icon_55.svg" alt="" class="lazy-img icon">
                                         <div class="text">
                                             <h6>Shopping Mall Score</h6>
                                             <p class="fs-16 m0"><span class="color-dark">42</span>/100 (Long Distance
@@ -727,10 +644,7 @@
                             <div class="bg-white shadow4 border-20 p-30">
                                 <div class="map-banner overflow-hidden border-15">
                                     <div class="gmap_canvas h-100 w-100">
-                                        <iframe
-                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83088.3595592641!2d-105.54557276330914!3d39.29302101722867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874014749b1856b7%3A0xc75483314990a7ff!2sColorado%2C%20USA!5e0!3m2!1sen!2sbd!4v1699764452737!5m2!1sen!2sbd"
-                                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                                            referrerpolicy="no-referrer-when-downgrade" class="w-100 h-100"></iframe>
+                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83088.3595592641!2d-105.54557276330914!3d39.29302101722867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874014749b1856b7%3A0xc75483314990a7ff!2sColorado%2C%20USA!5e0!3m2!1sen!2sbd!4v1699764452737!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-100 h-100"></iframe>
                                     </div>
                                 </div>
                             </div>
@@ -768,8 +682,7 @@
                                             <p class="fs-20 mt-20 mb-30">Lorem ipsum dolor sit amet consectetur.
                                                 Pellentesque sed nulla facili diam posuere aliquam suscipit quam.</p>
                                             <div class="d-flex review-help-btn">
-                                                <a href="#" class="me-5"><i
-                                                        class="fa-sharp fa-regular fa-thumbs-up"></i>
+                                                <a href="#" class="me-5"><i class="fa-sharp fa-regular fa-thumbs-up"></i>
                                                     <span>Helpful</span></a>
                                                 <a href="#"><i class="fa-sharp fa-regular fa-flag-swallowtail"></i>
                                                     <span>Flag</span></a>
@@ -799,34 +712,21 @@
                                             <p class="fs-20 mt-20 mb-30">Lorem ipsum dolor sit amet consectetur.
                                                 Pellentesque sed nulla facili diam posuere aliquam suscipit quam.</p>
                                             <ul class="style-none d-flex flex-wrap review-gallery pb-30">
-                                                <li><a href="../images/listing/img_large_01.jpg" class="d-block"
-                                                        data-fancybox="revImg" data-caption="Duplex orkit villa"><img
-                                                            src="../images/listing/img_48.jpg" alt=""></a></li>
-                                                <li><a href="../images/listing/img_large_02.jpg" class="d-block"
-                                                        data-fancybox="revImg" data-caption="Duplex orkit villa"><img
-                                                            src="../images/listing/img_49.jpg" alt=""></a></li>
-                                                <li><a href="../images/listing/img_large_03.jpg" class="d-block"
-                                                        data-fancybox="revImg" data-caption="Duplex orkit villa"><img
-                                                            src="../images/listing/img_50.jpg" alt=""></a></li>
+                                                <li><a href="../images/listing/img_large_01.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa"><img src="../images/listing/img_48.jpg" alt=""></a></li>
+                                                <li><a href="../images/listing/img_large_02.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa"><img src="../images/listing/img_49.jpg" alt=""></a></li>
+                                                <li><a href="../images/listing/img_large_03.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa"><img src="../images/listing/img_50.jpg" alt=""></a></li>
                                                 <li>
                                                     <div class="position-relative more-img">
                                                         <img src="../images/listing/img_50.jpg" alt="">
                                                         <span>13+</span>
-                                                        <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                            data-fancybox="revImg"
-                                                            data-caption="Duplex orkit villa."></a>
-                                                        <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                            data-fancybox="revImg"
-                                                            data-caption="Duplex orkit villa."></a>
-                                                        <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                            data-fancybox="revImg"
-                                                            data-caption="Duplex orkit villa."></a>
+                                                        <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa."></a>
+                                                        <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa."></a>
+                                                        <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="revImg" data-caption="Duplex orkit villa."></a>
                                                     </div>
                                                 </li>
                                             </ul>
                                             <div class="d-flex review-help-btn">
-                                                <a href="#" class="me-5"><i
-                                                        class="fa-sharp fa-regular fa-thumbs-up"></i>
+                                                <a href="#" class="me-5"><i class="fa-sharp fa-regular fa-thumbs-up"></i>
                                                     <span>Helpful</span></a>
                                                 <a href="#"><i class="fa-sharp fa-regular fa-flag-swallowtail"></i>
                                                     <span>Flag</span></a>
@@ -857,8 +757,7 @@
                                             <p class="fs-20 mt-20 mb-30">Lorem ipsum dolor sit amet consectetur.
                                                 Pellentesque sed nulla facili diam posuere aliquam suscipit quam.</p>
                                             <div class="d-flex review-help-btn">
-                                                <a href="#" class="me-5"><i
-                                                        class="fa-sharp fa-regular fa-thumbs-up"></i>
+                                                <a href="#" class="me-5"><i class="fa-sharp fa-regular fa-thumbs-up"></i>
                                                     <span>Helpful</span></a>
                                                 <a href="#"><i class="fa-sharp fa-regular fa-flag-swallowtail"></i>
                                                     <span>Flag</span></a>
@@ -878,8 +777,7 @@
 
                         <div class="review-form bg-white shadow4 border-20 p-40">
                             <h4 class="mb-20">Leave A Reply</h4>
-                            <p class="fs-20 lh-lg pb-15"><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal"
-                                    class="color-dark fw-500 text-decoration-underline">Sign in</a> to post your comment
+                            <p class="fs-20 lh-lg pb-15"><a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="color-dark fw-500 text-decoration-underline">Sign in</a> to post your comment
                                 or signup if you don't have any account.</p>
 
                             <form action="#">
@@ -927,8 +825,7 @@
                     <div class="col-xl-4 col-lg-8 me-auto ms-auto">
                         <div class="theme-sidebar-one dot-bg p-30 ms-xxl-3 lg-mt-80">
                             <div class="agent-info bg-white border-20 p-30 mb-40">
-                                <img src="../images/lazy.svg" data-src="../images/agent/img_06.jpg" alt=""
-                                    class="lazy-img rounded-circle ms-auto me-auto mt-3 avatar">
+                                <img src="../images/lazy.svg" data-src="../images/agent/img_06.jpg" alt="" class="lazy-img rounded-circle ms-auto me-auto mt-3 avatar">
                                 <div class="text-center mt-25">
                                     <h6 class="name">Rashed Kabir</h6>
                                     <p class="fs-16">Property Agent & Broker</p>
@@ -942,8 +839,7 @@
                                 <div class="divider-line mt-40 mb-45 pt-20">
                                     <ul class="style-none">
                                         <li>Location: <span>Spain, Barcelona</span></li>
-                                        <li>Email: <span><a
-                                                    href="mailto:akabirr770@gmail.com">akabirr770@gmail.com</a></span>
+                                        <li>Email: <span><a href="mailto:akabirr770@gmail.com">akabirr770@gmail.com</a></span>
                                         </li>
                                         <li>Phone: <span><a href="tel:+12347687565">+12347687565</a></span></li>
                                     </ul>
@@ -974,8 +870,7 @@
                                     <!-- /.input-box-three -->
                                     <div class="input-box-three mb-15">
                                         <div class="label">Message*</div>
-                                        <textarea
-                                            placeholder="Hello, I am interested in [Califronia Apartments]"></textarea>
+                                        <textarea placeholder="Hello, I am interested in [Califronia Apartments]"></textarea>
                                     </div>
                                     <!-- /.input-box-three -->
                                     <button class="btn-nine text-uppercase rounded-3 w-100 mb-10">INQUIry</button>
@@ -1015,12 +910,9 @@
                                 <h5 class="mb-40">Featured Listing</h5>
                                 <div id="F-listing" class="carousel slide">
                                     <div class="carousel-indicators">
-                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="0"
-                                            class="active" aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="1"
-                                            aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="2"
-                                            aria-label="Slide 3"></button>
+                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                        <button type="button" data-bs-target="#F-listing" data-bs-slide-to="2" aria-label="Slide 3"></button>
                                     </div>
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
@@ -1029,18 +921,13 @@
                                                     <div class="position-relative border-10 overflow-hidden">
                                                         <div class="tag bg-white text-dark fw-500 border-20">FOR RENT
                                                         </div>
-                                                        <a href="#" class="fav-btn tran3s"><i
-                                                                class="fa-light fa-heart"></i></a>
-                                                        <img src="../images/listing/img_13.jpg" class="w-100 border-10"
-                                                            alt="...">
+                                                        <a href="#" class="fav-btn tran3s"><i class="fa-light fa-heart"></i></a>
+                                                        <img src="../images/listing/img_13.jpg" class="w-100 border-10" alt="...">
                                                         <div class="img-slider-btn">
                                                             03 <i class="fa-regular fa-image"></i>
-                                                            <a href="../images/listing/img_large_01.jpg" class="d-block"
-                                                                data-fancybox="imgA" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_02.jpg" class="d-block"
-                                                                data-fancybox="imgA" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_03.jpg" class="d-block"
-                                                                data-fancybox="imgA" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_01.jpg" class="d-block" data-fancybox="imgA" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_02.jpg" class="d-block" data-fancybox="imgA" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_03.jpg" class="d-block" data-fancybox="imgA" data-caption="Blueberry villa"></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1052,9 +939,7 @@
                                                             <div class="address m0 pt-5">120 Elgin St. Celina, Delaware
                                                             </div>
                                                         </div>
-                                                        <a href="listing_details_03.html"
-                                                            class="btn-four rounded-circle"><i
-                                                                class="bi bi-arrow-up-right"></i></a>
+                                                        <a href="listing_details_03.html" class="btn-four rounded-circle"><i class="bi bi-arrow-up-right"></i></a>
                                                     </div>
                                                 </div>
                                                 <!-- /.property-info -->
@@ -1067,18 +952,13 @@
                                                     <div class="position-relative border-10 overflow-hidden">
                                                         <div class="tag bg-white text-dark fw-500 border-20">FOR RENT
                                                         </div>
-                                                        <a href="#" class="fav-btn tran3s"><i
-                                                                class="fa-light fa-heart"></i></a>
-                                                        <img src="../images/listing/img_14.jpg" class="w-100 border-10"
-                                                            alt="...">
+                                                        <a href="#" class="fav-btn tran3s"><i class="fa-light fa-heart"></i></a>
+                                                        <img src="../images/listing/img_14.jpg" class="w-100 border-10" alt="...">
                                                         <div class="img-slider-btn">
                                                             03 <i class="fa-regular fa-image"></i>
-                                                            <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                                data-fancybox="imgB" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                                data-fancybox="imgB" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                                data-fancybox="imgB" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="imgB" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="imgB" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="imgB" data-caption="Blueberry villa"></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1090,9 +970,7 @@
                                                             <div class="address m0 pt-5">120 Elgin St. Celina, Delaware
                                                             </div>
                                                         </div>
-                                                        <a href="listing_details_03.html"
-                                                            class="btn-four rounded-circle"><i
-                                                                class="bi bi-arrow-up-right"></i></a>
+                                                        <a href="listing_details_03.html" class="btn-four rounded-circle"><i class="bi bi-arrow-up-right"></i></a>
                                                     </div>
                                                 </div>
                                                 <!-- /.property-info -->
@@ -1105,18 +983,13 @@
                                                     <div class="position-relative border-10 overflow-hidden">
                                                         <div class="tag bg-white text-dark fw-500 border-20">FOR RENT
                                                         </div>
-                                                        <a href="#" class="fav-btn tran3s"><i
-                                                                class="fa-light fa-heart"></i></a>
-                                                        <img src="../images/listing/img_15.jpg" class="w-100 border-10"
-                                                            alt="...">
+                                                        <a href="#" class="fav-btn tran3s"><i class="fa-light fa-heart"></i></a>
+                                                        <img src="../images/listing/img_15.jpg" class="w-100 border-10" alt="...">
                                                         <div class="img-slider-btn">
                                                             03 <i class="fa-regular fa-image"></i>
-                                                            <a href="../images/listing/img_large_04.jpg" class="d-block"
-                                                                data-fancybox="imgC" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_05.jpg" class="d-block"
-                                                                data-fancybox="imgC" data-caption="Blueberry villa"></a>
-                                                            <a href="../images/listing/img_large_06.jpg" class="d-block"
-                                                                data-fancybox="imgC" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_04.jpg" class="d-block" data-fancybox="imgC" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_05.jpg" class="d-block" data-fancybox="imgC" data-caption="Blueberry villa"></a>
+                                                            <a href="../images/listing/img_large_06.jpg" class="d-block" data-fancybox="imgC" data-caption="Blueberry villa"></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1128,9 +1001,7 @@
                                                             <div class="address m0 pt-5">120 Elgin St. Celina, Delaware
                                                             </div>
                                                         </div>
-                                                        <a href="listing_details_03.html"
-                                                            class="btn-four rounded-circle"><i
-                                                                class="bi bi-arrow-up-right"></i></a>
+                                                        <a href="listing_details_03.html" class="btn-four rounded-circle"><i class="bi bi-arrow-up-right"></i></a>
                                                     </div>
                                                 </div>
                                                 <!-- /.property-info -->

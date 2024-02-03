@@ -32,7 +32,7 @@
 		<aside class="dash-aside-navbar">
 			<div class="position-relative">
 				<div class="logo d-md-block d-flex align-items-center justify-content-between plr bottom-line pb-30">
-					<a href="../../index.html">
+					<a href="../../index.php">
 						<img src="../../images/logo/logo_01.svg" alt="">
 					</a>
 					<button class="close-btn d-block d-md-none"><i class="fa-light fa-circle-xmark"></i></button>
@@ -42,7 +42,7 @@
 				<nav class="dasboard-main-nav pt-30 pb-30 bottom-line">
 					<ul class="style-none">
 
-						<li class="plr"><a href="dashboard.html" class="d-flex w-100 align-items-center ">
+						<li class="plr"><a href="dashboard.php" class="d-flex w-100 align-items-center ">
 								<img src="images/icon/icon_1.svg" alt="">
 								<span>Dashboard</span>
 							</a></li>
@@ -56,12 +56,12 @@
 							<div class="nav-title">Listing</div>
 						</li>
 
-						<li class="plr"><a href="properties-list.html" class="d-flex w-100 align-items-center">
+						<li class="plr"><a href="properties-list.php" class="d-flex w-100 align-items-center">
 								<img src="images/icon/icon_6.svg" alt="">
 								<span>My Properties</span>
 							</a></li>
 
-						<li class="plr"><a href="add-property.html" class="d-flex w-100 align-items-center ">
+						<li class="plr"><a href="add-property.php" class="d-flex w-100 align-items-center ">
 								<img src="images/icon/icon_7.svg" alt="">
 								<span>Add New Property</span>
 							</a></li>
@@ -75,7 +75,7 @@
 						<li>
 							<div class="nav-title">Profile</div>
 						</li>
-						<li class="plr"><a href="profile.html" class="d-flex w-100 align-items-center active">
+						<li class="plr"><a href="profile.php" class="d-flex w-100 align-items-center active">
 								<img src="images/icon/icon_3_active.svg" alt="">
 								<span>Profile</span>
 							</a></li>
@@ -97,7 +97,7 @@
 
 
 			<div class="plr pt-30">
-				<a href="#" class="d-flex w-100 align-items-center logout-btn">
+				<a href="../sign-up_in-handler/logout_button.php"" class="d-flex w-100 align-items-center logout-btn">
 					<div class="icon tran3s d-flex align-items-center justify-content-center rounded-circle"><img
 							src="images/icon/icon_41.svg" alt=""></div>
 					<span>Logout</span>
@@ -170,7 +170,7 @@
 						</ul>
 					</div>
 					<div class="d-none d-md-block me-3">
-						<a href="add-property.html" class="btn-two"><span>Add Listing</span> <i
+						<a href="add-property.php" class="btn-two"><span>Add Listing</span> <i
 								class="fa-thin fa-arrow-up-right"></i></a>
 					</div>
 					<div class="user-data position-relative">
@@ -183,12 +183,12 @@
 						<div class="user-name-data">
 							<ul class="dropdown-menu" aria-labelledby="profile-dropdown">
 								<li>
-									<a class="dropdown-item d-flex align-items-center" href="profile.html"><img
+									<a class="dropdown-item d-flex align-items-center" href="profile.php"><img
 											src="../images/lazy.svg" data-src="images/icon/icon_23.svg" alt=""
 											class="lazy-img"><span class="ms-2 ps-1">Profile</span></a>
 								</li>
 								<li>
-									<a class="dropdown-item d-flex align-items-center" href="account-settings.html"><img
+									<a class="dropdown-item d-flex align-items-center" href="account-settings.php"><img
 											src="../images/lazy.svg" data-src="images/icon/icon_24.svg" alt=""
 											class="lazy-img"><span class="ms-2 ps-1">Account Settings</span></a>
 								</li>

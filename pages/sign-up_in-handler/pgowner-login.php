@@ -9,13 +9,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // Retrieve form data sent by the user 
     $email = $_POST['pg_owner_loginemail'];
-    $password = $_POST['pg_owner_loginpassword']; // Consider encrypting the password
-
-    // Validation and sanitization of the data should go here
-
+    $password = $_POST['pg_owner_loginpassword']; 
+    
     try {
         // Prepare SQL statement
-        $sql = "SELECT Owner_UUID, Owner_Name, Owner_Email, Owner_Password FROM pg_owners WHERE Owner_Email = :email AND Owner_Password = :password";
+        $sql = "SELECT OwnerId, Owner_UUID, Owner_Name, Owner_Email, Owner_Password FROM pg_owners WHERE Owner_Email = :email AND Owner_Password = :password";
         $stmt = $conn->prepare($sql);
 
         // Bind parameters
@@ -31,19 +29,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Retrieve the result
         $result = $stmt->fetchAll();
 
+        
+        
+
+
         // Check if the user exists
         if (count($result) == 1) {
             // Set session variables
+            $_SESSION['data'] = $result;
+            
             $_SESSION['pgowner_uuid'] = $result[0]['Owner_UUID'];
             $_SESSION['pgowner_name'] = $result[0]['Owner_Name'];
             $_SESSION['pgowner_email'] = $result[0]['Owner_Email'];
             $_SESSION['pgowner_password'] = $result[0]['Owner_Password'];
-
             $_SESSION['login_success'] = true; // Set a session variable on success
+
             header("Location: ../pgowner.php"); // Redirect to the pgowner.php script
             exit();
         } else {
-            $_SESSION['login_error'] = true; // Set a session variable on error
+            $_SESSION['login_error'] = true; // Set a session variable on error     
             header("Location: ../pgowner.php"); // Redirect to the pgowner.php script
             exit();
         }

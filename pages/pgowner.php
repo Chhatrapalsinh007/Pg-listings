@@ -1,7 +1,15 @@
+<!-- Start the session at the beginning and then check if the session variable is set. If it is set, then redirect to the dashboard.php script. -->
 <?php
-session_start();
-?>
+session_start(); // Start the session at the beginning
 
+if (isset($_SESSION['pgowner_uuid'])) {
+    echo "<script>Swal.fire('Success', 'You have successfully logged in!', 'success');</script>";
+    header("Location: ./dashboard/dashboard.php"); // Redirect to the dashboard.php script
+    exit();
+}
+
+?>
+ 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,19 +42,22 @@ session_start();
 
 <body>
 
-    //show the signup success message
+    
+   
+    <?php   
+    if (isset($_SESSION['login_success'])) {
+        //using sweet alert for showing success message and redirecting to the pgowner.php
+        echo "<script>Swal.fire('Success', 'You have successfully logged in!', 'success');</script>";
+        echo "<script>setTimeout(function(){window.location.href = 'http://localhost/Pg-listings/pages/dashboard/dashboard.php';}, 2000);</script>";
+        unset($_SESSION['login_success']);
+    }
 
-
-    <?php
-    if (isset($_SESSION['signup_success'])) {
+    if (isset($_SESSION['login_error'])) {
         //using sweet alert for showing success message
-        echo "<script>Swal.fire('Success', 'You have successfully signed up!', 'success');</script>";
-        unset($_SESSION['signup_success']);
+        echo "<script>Swal.fire('Error', 'Invalid email or password!', 'error');</script>";
+        unset($_SESSION['login_error']);
     }
     ?>
-
-
-
 
     <div class="main-page-wrapper">
 
@@ -172,11 +183,12 @@ session_start();
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <div
+                                                <!-- <div
                                                     class="agreement-checkbox d-flex justify-content-between align-items-center">
 
                                                     <a href="#">Forget Password?</a>
-                                                </div> <!-- /.agreement-checkbox -->
+                                                </div>  -->
+                                                <!-- /.agreement-checkbox -->
                                             </div>
                                             <div class="col-12">
                                                 <button
@@ -221,7 +233,7 @@ session_start();
                                                 </div>
                                             </div>
                                             <div class="col-12">
-                                                <div
+                                                <!-- <div
                                                     class="agreement-checkbox d-flex justify-content-between align-items-center">
                                                     <div>
                                                         <input type="checkbox" id="remember2">
@@ -230,7 +242,7 @@ session_start();
                                                                 href="#">Privacy Policy</a></label>
                                                     </div>
                                                 </div> <!-- /.agreement-checkbox -->
-                                            </div>
+                                            </div> 
                                             <div class="col-12">
                                                 <button class="btn-two w-100 text-uppercase d-block mt-20">Sign
                                                     Up</button>
@@ -251,6 +263,11 @@ session_start();
                 </div>
             </div>
         </div>
+
+       
+
+
+
 
 
 
