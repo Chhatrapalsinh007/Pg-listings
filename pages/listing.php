@@ -279,8 +279,22 @@ try {
 
                                 <?php
 
+
+
                                 foreach ($properties as $property) {
-                                    echo "<div class='col-md-6 d-flex mb-50 wow fadeInUp'>
+                                    $property_id = $property['PGID'];
+
+                                    //Fetch the image name from the database
+                                    $image_query = "SELECT file_name FROM property_attachments WHERE pg_id = :PGID ";
+                                    $stmt = $conn->prepare($image_query);
+                                    $stmt->bindParam(':PGID', $property_id);
+                                    $stmt->execute();
+                                    $image = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                    //print in the console
+                                    echo "<script>console.log('Image: " . json_encode($image) . "');</script>";
+
+                                    echo "<div class='col-md-6 d-flex mb-60 wow fadeInUp'>
                                     <div class='listing-card-one border-25 h-100 w-100'>
                                         <div class='img-gallery p-15'>
                                             <div class='position-relative border-25 overflow-hidden'>
@@ -289,21 +303,11 @@ try {
                                                 <div id='carousel7' class='carousel slide'>
                                                     <div class='carousel-indicators'>
                                                         <button type='button' data-bs-target='#carousel7' data-bs-slide-to='0' class='active' aria-current='true' aria-label='Slide 1'></button>
-                                                        <button type='button' data-bs-target='#carousel7' data-bs-slide-to='1' aria-label='Slide 2'></button>
-                                                        <button type='button' data-bs-target='#carousel7' data-bs-slide-to='2' aria-label='Slide 3'></button>
+                                                        
                                                     </div>
                                                     <div class='carousel-inner'>
                                                         <div class='carousel-item active' data-bs-interval='1000000'>
-                                                            <a href='#' class='d-block'><img src='../images/listing/img-1.jpg' class='w-100' alt
-                                                            ='...' /></a>
-                                                        </div>
-                                                        <div class='carousel-item' data-bs-interval='1000000'>
-                                                            <a href='#' class='d-block'><img src='../images/listing/img-2.jpg' class='w-100' alt
-                                                            ='...' /></a>
-                                                        </div>
-                                                        <div class='carousel-item' data-bs-interval='1000000'>
-                                                            <a href='#' class='d-block'><img src='../images/listing/img-3.jpg' class='w-100' alt
-                                                            ='...' /></a>
+                                                            <a href='#' class='d-block'><img src='dashboard/uploads/" . htmlspecialchars($image['file_name']) . "' class='w-100' style='height:50%;' /></a>
                                                         </div>
                                                     </div>
 

@@ -363,19 +363,15 @@ try {
 								$property_type = $property['PG_Type'];
 
 
-								// Assuming $property_id is already defined and valid
-								$property_images_sql = "SELECT file_name FROM property_attachments WHERE pg_id = :PGID";
-								$stmt = $conn->prepare($property_images_sql);
+								//Fetch the image name from the database
+								$image_query = "SELECT file_name FROM property_attachments WHERE pg_id = :PGID ";
+								$stmt = $conn->prepare($image_query);
 								$stmt->bindParam(':PGID', $property_id);
 								$stmt->execute();
+								$image = $stmt->fetch(PDO::FETCH_ASSOC);
 
-								// Fetch the results as an associative array
-								$property_images = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-								
-								//print the result in the console
-								echo "<script>console.log('Property Images: " . $property_images . "');</script>";
-
+								//print in the console
+								echo "<script>console.log('Image: " . json_encode($image) . "');</script>";
 
 
 								//print the result in the table

@@ -75,63 +75,6 @@ if (isset($_POST['submit'])) {
 	echo "Property For: " . $PropertyFor . "<br>";
 	echo "Property Availability Status: " . $PropertyAvailabilityStatus . "<br>";
 
-	// move the uploaded file to the server and store the file name in the database
-	$target_dir = "uploads/";
-	$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-	$uploadOk = 1;
-	$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-	// Check if image file is a actual image or fake image
-	$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-	if ($check !== false) {
-		echo "File is an image - " . $check["mime"] . ".";
-		$uploadOk = 1;
-	} else {
-		echo "File is not an image.";
-		$uploadOk = 0;
-	}
-
-	// Check if file already exists
-	if (file_exists($target_file)) {
-		echo "Sorry, file already exists.";
-		$uploadOk = 0;
-	}
-
-	// Check file size
-	if ($_FILES["fileToUpload"]["size"] > 500000) {
-		echo "Sorry, your file is too large.";
-		$uploadOk = 0;
-	}
-
-	// Allow certain file formats
-	if (
-		$imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-		&& $imageFileType != "mp4"
-	) {
-		echo "Sorry, only JPG, JPEG, PNG & MP4 files are allowed.";
-		$uploadOk = 0;
-	}
-
-	// Check if $uploadOk is set to 0 by an error
-	if ($uploadOk == 0) {
-		echo "Sorry, your file was not uploaded.";
-		// if everything is ok, try to upload file
-	} else {
-		//move the file to the uploads folder and store the file name in the database
-		if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-			echo "The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.";
-			echo "<script>console.log('File name: " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . "');</script>";
-
-		
-			
-
-			
-
-		} else {
-			echo "Sorry, there was an error uploading your file.";
-		}
-	}
-
 
 
 
@@ -163,32 +106,81 @@ if (isset($_POST['submit'])) {
 		//print success message
 		echo "New record created successfully";
 
+
+		// move the uploaded file to the server and store the file name in the database
+		$target_dir = "uploads/";
+		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+		$uploadOk = 1;
+		$imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+		// Check if image file is a actual image or fake image
+		$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+		if ($check !== false) {
+			echo "<script>console.log('File is an image - " . $check["mime"] . "');</script>";
+			$uploadOk = 1;
+		} else {
+
+			//print in the console
+			echo "<script>console.log('File is not an image.');</script>";
+			$uploadOk = 0;
+		}
+
+		// Check if file already exists
+		if (file_exists($target_file)) {
+			//print in the console
+			echo "<script>console.log('Sorry, file already exists.');</script>";
+
+			$uploadOk = 0;
+		}
+
+		// Check file size
+		if ($_FILES["fileToUpload"]["size"] > 52428800) {
+
+			//print in the console
+			echo "<script>console.log('Sorry, your file is too large.');</script>";
+			$uploadOk = 0;
+		}
+
+		// Allow certain file formats
+		if (
+			$imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+			&& $imageFileType != "mp4"
+		) {
+			echo "Sorry, only JPG, JPEG, PNG & MP4 files are allowed.";
+			$uploadOk = 0;
+		}
+
+		// Check if $uploadOk is set to 0 by an error
+		if ($uploadOk == 0) {
+			echo "Sorry, your file was not uploaded.";
+			// if everything is ok, try to upload file
+		} else {
+			//move the file to the uploads folder and store the file name in the database
+			if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+
+				echo "<script>console.log('The file " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . " has been uploaded.');</script>";
+				echo "<script>console.log('File name: " . htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) . "');</script>";
+			} else {
+				echo "Sorry, there was an error uploading your file.";
+			}
+		}
+
+
+
 		//retive the last inserted property id from the database and pass it to the add-image-name.php file
 
+		//pass the file name to the add-image-name.php file to store the file name in the database
+		//retive the last inserted property id from the database and pass it to the add-image-name.php file
+		$last_inserted_id = $conn->lastInsertId();
 
-			//pass the file name to the add-image-name.php file to store the file name in the database
-			//retive the last inserted property id from the database and pass it to the add-image-name.php file
-			$last_inserted_id = $conn->lastInsertId();
-			$filename = htmlspecialchars(basename($_FILES["fileToUpload"]["name"]));
-			$_SESSION['filename'] = $filename;
-			$_SESSION['last_inserted_id'] = $last_inserted_id;
+		$filename = htmlspecialchars(basename($_FILES["fileToUpload"]["name"]));
+		$_SESSION['filename'] = $filename;
+		$_SESSION['last_inserted_id'] = $last_inserted_id;
 		header("Location: add-image-name.php");
-
 	} catch (PDOException $e) {
 		echo "Error: " . $e->getMessage();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 ?>

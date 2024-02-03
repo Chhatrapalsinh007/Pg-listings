@@ -4,9 +4,9 @@
 include '../db_connect.php';
 
 
-$PGID = $_GET['id'];
+$PGID = $_GET['PG_Id'];
 
-print "<script>console.log('PGID: " . $PGID . "');</script>";
+print "<script>console.log('This is PGID: " . $PGID . "');</script>";
 
 // Fetch the PG details
 try {
@@ -190,8 +190,6 @@ try {
                                         <div class="carousel-item">
                                             <img src="../images/listing/img-1.jpg" alt="" class="border-20 w-100">
                                         </div>
-
-
                                     </div>
                                     <button class="carousel-control-prev" type="button" data-bs-target="#media_slider" data-bs-slide="prev">
                                         <i class="bi bi-chevron-left"></i>
@@ -206,14 +204,13 @@ try {
                         </div>
                         <div class="col-lg-2">
                             <div class="carousel-indicators position-relative border-15 bg-white shadow4 p-15 w-100 h-100">
+
                                 <button type="button" data-bs-target="#media_slider" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1">
                                     <img src="../images/listing/img-2.jpg" alt="" class="border-10 w-100">
                                 </button>
                                 <button type="button" data-bs-target="#media_slider" data-bs-slide-to="1" aria-label="Slide 2">
                                     <img src="../images/listing/img-1.jpg" alt="" class="border-10 w-100">
                                 </button>
-
-
                             </div>
                         </div>
                     </div>
@@ -254,8 +251,7 @@ try {
                         <!-- /.property-overview -->
                         <div class="property-feature-accordion bg-white shadow4 border-20 p-40 mb-50">
                             <h4 class="mb-20">Property Features</h4>
-                            <p class="fs-20 lh-lg">Risk management and compliance, when approached strategically, have
-                                the potential to go beyond mitigating threats.</p>
+                            <p class="fs-20 lh-lg">Here are some of the features provided by the PG owner</p>
 
                             <div class="accordion-style-two mt-45">
                                 <div class="accordion" id="accordionTwo">
