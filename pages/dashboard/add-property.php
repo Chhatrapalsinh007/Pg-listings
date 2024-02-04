@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
 	$Refrigerator = (isset($_POST['Refrigerator']) && $_POST['Refrigerator'] === "Refrigerator") ? '1' : '0';
 	$CCTV = (isset($_POST['CCTV']) && $_POST['CCTV'] === "CCTV") ? '1' : '0';
 
-	
+
 	$PropertyAddress = $_POST['PropertyAddress'];
 	$PropertyCity = $_POST['PropertyCity'];
 	$PropertyState = $_POST['PropertyState'];
@@ -316,7 +316,7 @@ if (isset($_POST['submit'])) {
 			<!-- ************************ Header **************************** -->
 			<header class="dashboard-header">
 				<div class="d-flex align-items-center justify-content-end">
-					<h4 class="m0 d-none d-lg-block">My Properties</h4>
+					<h4 class="m0 d-none d-lg-block">Add New Properties</h4>
 					<button class="dash-mobile-nav-toggler d-block d-md-none me-auto">
 						<span></span>
 					</button>
@@ -407,7 +407,6 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Category*</label>
 								<select class="nice-select" name="PropertyCategory">
-									<option value="0">Select Category</option>
 
 									<option value="Flat">Flat</option>
 									<option value="Bunglow">Bunglow</option>
@@ -435,7 +434,7 @@ if (isset($_POST['submit'])) {
 					<div class="row align-items-end">
 						<div class="col-md-6">
 							<div class="dash-input-wrapper mb-30">
-								<label for="">Size in ft*</label>
+								<label for="">Size in Sqft*</label>
 								<input type="text" placeholder="Ex: 3,210 sqft" name="PropertySize">
 							</div>
 							<!-- /.dash-input-wrapper -->
@@ -444,10 +443,22 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Bedrooms*</label>
 								<select class="nice-select" name="PropertyBedrooms">
-									
+
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
 								</select>
 							</div>
 							<!-- /.dash-input-wrapper -->
@@ -456,7 +467,7 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Beds*</label>
 								<select class="nice-select" name="PropertyBeds">
-									
+
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -483,7 +494,7 @@ if (isset($_POST['submit'])) {
 							<div class="dash-input-wrapper mb-30">
 								<label for="">Bathrooms*</label>
 								<select class="nice-select" name="PropertyBathrooms">
-									
+
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -511,13 +522,25 @@ if (isset($_POST['submit'])) {
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
 								</select>
 							</div>
 							<!-- /.dash-input-wrapper -->
 						</div>
 						<div class="col-md-6">
 							<div class="dash-input-wrapper mb-30">
-								<label for="">Number Of Persons</label>
+								<label for="">Number Of Persons*</label>
 								<select class="nice-select" name="PropertyNumberOfPersons">
 
 									<option value="1">1</option>
@@ -837,7 +860,7 @@ if (isset($_POST['submit'])) {
 
 
 		var allSelectedFiles = []; // Array to keep track of all selected files
-		var allowedExtensions = ['jpg', 'jpeg', 'png', 'mp4']; // Allowed file extensions
+		var allowedExtensions = ['jpg', 'jpeg', 'png']; // Allowed file extensions
 
 		document.getElementById('uploadCV').addEventListener('change', function(e) {
 			// Clear previous error messages
@@ -901,25 +924,27 @@ if (isset($_POST['submit'])) {
 					PropertyDescription: {
 						required: true,
 						minlength: 10,
-						maxlength: 500
+						maxlength: 500,
+						alphanumericSpace: true
 					},
 					PropertyPrice: {
 						required: true,
 						number: true,
-						min: 0,
-						max: 100000000
+						min: 500,
+						max: 50000,
+						integer: true
 					},
 					PropertyYearBuilt: {
 						required: true,
 						digits: true,
 						minlength: 4,
 						maxlength: 4,
-						min: 1900,
+						min: 1980,
 						max: new Date().getFullYear()
 					},
 					PropertyAddress: {
 						required: true,
-						minlength: 5,
+						minlength: 15,
 						maxlength: 100
 					},
 
@@ -934,7 +959,22 @@ if (isset($_POST['submit'])) {
 					},
 					PropertyState: {
 						required: true
-					}
+					},
+					fileToUpload: {
+						required: true,
+						extension: "jpg|jpeg|png|",
+						accept: "image/*",
+						filesize: 52428800,
+
+					},
+					//size in ft
+					PropertySize: {
+						required: true,
+						minlength: 3,
+						maxlength: 10,
+						integer: true
+					},
+
 				},
 				messages: {
 					PropertyTitle: {
@@ -946,13 +986,15 @@ if (isset($_POST['submit'])) {
 					PropertyDescription: {
 						required: "Please enter property description",
 						minlength: "Description must be at least 10 characters long",
-						maxlength: "Description must be at most 500 characters long"
+						maxlength: "Description must be at most 500 characters long",
+						alphanumericSpace: "Description must contain only letters, numbers, and spaces"
 					},
 					PropertyPrice: {
 						required: "Please enter property price",
 						number: "Price must be a number",
 						min: "Price must be more then 500",
-						max: "Price must be at most 40000"
+						max: "Price must be at most 40000",
+						integer:"Please enter a valid Price."
 					},
 					PropertyYearBuilt: {
 						required: "Please enter year built",
@@ -978,13 +1020,34 @@ if (isset($_POST['submit'])) {
 					},
 					PropertyState: {
 						required: "Please select property state"
+					},
+					fileToUpload: {
+						required: "Please select a file",
+						extension: "Please select a file with jpg, jpeg, or png extension",
+						accept: "Please select an image file",
+						filesize: "Please select a file with size less than 50MB"
+					},
+					PropertySize: {
+						required: "Please enter property size",
+						minlength: "Size must be at least 3 characters long",
+						maxlength: "Size must be at most 10 characters long",
+						integer: "Please enter a valid Size."
 					}
+
+
 				}
 			});
 
+			//this is to check unwanted symbols in the title and description
 			$.validator.addMethod("alphanumericSpace", function(value, element) {
 				return this.optional(element) || /^[a-zA-Z0-9\s]+$/i.test(value);
 			}, "Title must contain only letters, numbers, and spaces.");
+
+			//this is to validate the price is integer 
+			$.validator.addMethod("integer", function(value, element) {
+				return this.optional(element) || /^\d+$/.test(value);
+			}, "Please enter a valid Price.");
+
 		});
 	</script>
 

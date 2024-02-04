@@ -290,6 +290,9 @@ try {
                                     $stmt->bindParam(':PGID', $property_id);
                                     $stmt->execute();
                                     $image = $stmt->fetch(PDO::FETCH_ASSOC);
+                                    // Trim the address and append "..." only if it exceeds 100 characters
+                                    $max_length = 25; // Maximum number of characters to display
+                                    $trimmed_address = strlen($property['PG_Address']) > $max_length ? substr($property['PG_Address'], 0, $max_length) . "..." : $property['PG_Address'];
 
                                     //print in the console
                                     echo "<script>console.log('Image: " . json_encode($image) . "');</script>";
@@ -298,7 +301,7 @@ try {
                                     <div class='listing-card-one border-25 h-100 w-100'>
                                         <div class='img-gallery p-15'>
                                             <div class='position-relative border-25 overflow-hidden'>
-                                                <div class='tag border-25'>$property[PG_City]</div>
+                                                <div class='tag border-25'>$property[PG_Availability]</div>
                                                 <a href='bookmark.php?PG_Id=$property[PGID]' class='fav-btn tran3s'><i class='fa-light fa-heart'></i></a>
                                                 <div id='carousel7' class='carousel slide'>
                                                     <div class='carousel-indicators'>
@@ -317,22 +320,28 @@ try {
                                         <!-- /.img-gallery -->
 
                                         <div class='property-info p-25'>
-                                            <a href='listing-details.php?PG_Id=$property[PGID]' class='title tran
-                                            3s'>$property[PG_Title]</a>
-                                            <div class='address'>" . substr($property['PG_Address'], 0, 140) . "...</div>
-                                            <ul class='style-none feature d-flex flex-wrap align-items-center justify-content-between'>
+
+                                            <a href='listing-details.php?PG_Id=$property[PGID]' class='title tran3s'>$property[PG_Title]</a>
+
+                                            <div class='address'>$trimmed_address</div>
+
+                                            <ul class='style-none feature d-flex flex-wrap align-items-center justify-content-between '>
+
                                                 <li class='d-flex align-items-center'>
                                                     <img src='../images/lazy.svg' data-src='../images/icon/icon_04.svg' alt='' class='lazy-img icon me-2' />
                                                     <span class='fs-16'>$property[PG_Size_sqft] sqft</span>
                                                 </li>
+
+                                                <li class=''>
+                                                    <i class = 'fa-thin fa-location-dot',style='padding-right: 40px !important;'> </i>
+                                                    <span class='fs-16'>$property[PG_City] </span>       
+                                                </li>   
+
                                                 <li class='d-flex align-items-center'>
                                                     <img src='../images/lazy.svg' data-src='../images/icon/icon_05.svg' alt='' class='lazy-img icon me-2' />
                                                     <span class='fs-16'>$property[PG_Beds] bed</span>
                                                 </li>
-                                                <li class='d-flex align-items-center'>
-                                                    <img src='../images/lazy.svg' data-src='../images/icon/icon_06.svg' alt='' class='lazy-img icon me-2' />
-                                                    <span class='fs-16'>$property[PG_Bathrooms] bath</span>
-                                                </li>
+                                                
                                             </ul>
                                             <div class='pl-footer top-border d-flex align-items-center justify-content-between'>
                                                 <strong class='price fw-500 color-dark'>₹$property[PG_Rent]/<sub>m</sub></strong>

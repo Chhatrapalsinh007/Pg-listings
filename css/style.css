@@ -13945,3 +13945,7 @@ html.with-fancybox body.hide-scrollbar {
 .slick-arrow.slick-hidden {
   display: none;
 }/*# sourceMappingURL=style.css.map */
+
+.force-new-line {
+  width: 100%; /* This forces the element to occupy the full width, pushing it to a new line */
+}

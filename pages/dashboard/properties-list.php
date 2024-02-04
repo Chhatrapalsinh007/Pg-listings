@@ -379,7 +379,7 @@ try {
 								echo "<tr>";
 								echo "<td>";
 								echo "<div class='d-lg-flex align-items-center position-relative'>";
-								echo "<img src='uploads/" . htmlspecialchars($image['file_name']) . "' alt='' class='lazy-img property-img' style='max-width: 40%;'>";
+								echo "<img src='uploads/" . htmlspecialchars($image['file_name']) . "' alt='' class='lazy-img property-img' style='width: 220px;height: 120px;'>";
 								echo "<div class='ps-lg-4 md-pt-10'>";
 								echo "<a href='edit-property.php?property_id=$property_id' class='property-name tran3s color-dark fw-500 fs-20 stretched-link'>$property_name</a>";
 								echo "<div class='address'>$property_address</div>";

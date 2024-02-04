@@ -6,27 +6,20 @@ session_start();
 include '../../db_connect.php';
 
 //get the id of the property to be edited from the url
-$PropertyId = $_GET['property_id'];
-
-//retrive the OwnerId from the session data variable
-$OwnerId = $_SESSION['data'][0]['OwnerId'];
-
+$PropertyId = $_GET['propertyid'];
 
 try {
 
-    $sql = "SELECT * FROM pg_listings WHERE PGID = :Property AND OwnerId = :Owner";
+    $sql = "SELECT * FROM pg_listings WHERE PGID = :Property";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->bindParam(':Property', $PropertyId, PDO::PARAM_INT);
-    $stmt->bindParam(':Owner', $OwnerId, PDO::PARAM_INT);
 
     $stmt->execute();
 
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-
-    //store the result in the variable so that it can be used to prefill the form
     $PropertyTitle = $result[0]['PG_Title'];
     $PropertyDescription = $result[0]['PG_Description'];
     $PropertyCategory = $result[0]['PG_Category'];
@@ -56,14 +49,58 @@ try {
     $PropertyState = $result[0]['PG_State'];
     $PropertyPinCode = $result[0]['PG_PinCode'];
 
-    
-
-    }
-    //catch any error
+    //print the result in the console 
+    echo "<script>console.log('Result: " . json_encode($result) . "');</script>";
+}
+//catch any error
 catch (PDOException $e) {
     //console log
     echo "<script>console.log('Connection failed: " . $e->getMessage() . "');</script>";
-} 
+}
+
+//if submit button is clicked then update the property satatus to approved
+if (isset($_POST['submit'])) {
+
+    //get the id of the property to be edited from the url
+    $PropertyId = $_POST['property_id'];
+
+
+    //update the property status to approved
+    $sql = "UPDATE pg_listings SET PG_ApprovalStatus = 'Approved' WHERE PGID = :PropertyId";
+
+    $stmt = $conn->prepare($sql);
+
+    $stmt->bindParam(':PropertyId', $PropertyId, PDO::PARAM_INT);
+
+    $stmt->execute();
+
+    $update_status = $stmt;
+}
+
+try {
+    // Check if the AJAX action is to reject the property
+    if (isset($_POST['ajaxAction']) && $_POST['ajaxAction'] == 'rejectProperty') {
+        $PropertyId = $_GET['propertyid']; // Assuming this is still how you're getting your property ID
+
+        try {
+            $sql = "UPDATE pg_listings SET PG_ApprovalStatus = 'Rejected' WHERE PGID = :PropertyId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':PropertyId', $PropertyId, PDO::PARAM_INT);
+            $stmt->execute();
+
+           //redirect to the approval request page
+            header('Location: accept-reject-property.php');
+            exit; // Stop further script execution after AJAX request
+        } catch (PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+            exit; // Important to stop script execution on error
+        }
+    }
+} catch (PDOException $e) {
+    echo "Connection failed: " . $e->getMessage();
+}
+
+
 
 ?>
 
@@ -84,6 +121,9 @@ catch (PDOException $e) {
     <link rel="stylesheet" type="text/css" href="../../css/style.css" media="all">
     <!-- responsive style sheet -->
     <link rel="stylesheet" type="text/css" href="../../css/responsive.css" media="all">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </head>
 
@@ -113,9 +153,9 @@ catch (PDOException $e) {
                 <nav class="dasboard-main-nav pt-30 pb-30 bottom-line">
                     <ul class="style-none">
 
-                        <li class="plr"><a href="dashboard.php" class="d-flex w-100 align-items-center ">
+                        <li class="plr"><a href="dashboard.php" class="d-flex w-100 align-items-center">
                                 <img src="images/icon/icon_1.svg" alt="">
-                                <span>Dashboard</span>
+                                <span>Admin Dashboard</span>
                             </a></li>
 
 
@@ -127,16 +167,21 @@ catch (PDOException $e) {
                             <div class="nav-title">Listing</div>
                         </li>
 
-                        <li class="plr"><a href="properties-list.php" class="d-flex w-100 align-items-center active">
-                                <img src="images/icon/icon_6_active.svg" alt="">
-                                <span>My Properties</span>
+                        <li class="plr"><a href="see-all-properties-list.php" class="d-flex w-100 align-items-center">
+                                <img src="images/icon/icon_6.svg" alt="">
+                                <span>See All Properties</span>
                             </a></li>
 
-                        <li class="plr"><a href="add-property.php" class="d-flex w-100 align-items-center ">
-                                <img src="images/icon/icon_7.svg" alt="">
-                                <span>Add New Property</span>
+                        <li class="plr"><a href="accept-reject-property.php" class="d-flex w-100 align-items-center active">
+                                <img src="images/icon/icon_7_active.svg" alt="">
+                                <span>Approval Requests</span>
                             </a></li>
 
+
+                        <li class="plr"><a href="approved-property.php" class="d-flex w-100 align-items-center">
+                                <img src="../dashboard/images/icon/icon_right.svg" alt="">
+                                <span>Approved Properties</span>
+                            </a></li>
                         <!-- Property Management Section End -->
 
 
@@ -146,7 +191,7 @@ catch (PDOException $e) {
                         <li>
                             <div class="nav-title">Profile</div>
                         </li>
-                        <li class="plr"><a href="profile.php" class="d-flex w-100 align-items-center">
+                        <li class="plr"><a href="profile.html" class="d-flex w-100 align-items-center">
                                 <img src="images/icon/icon_3.svg" alt="">
                                 <span>Profile</span>
                             </a></li>
@@ -194,7 +239,7 @@ catch (PDOException $e) {
             <!-- ************************ Header **************************** -->
             <header class="dashboard-header">
                 <div class="d-flex align-items-center justify-content-end">
-                    <h4 class="m0 d-none d-lg-block">Edit Property Detail</h4>
+                    <h4 class="m0 d-none d-lg-block">Approve Property</h4>
                     <button class="dash-mobile-nav-toggler d-block d-md-none me-auto">
                         <span></span>
                     </button>
@@ -233,7 +278,9 @@ catch (PDOException $e) {
 
             <!-- ************************ Main Dashboard Content ************************ -->
 
-            <form action="edit-proprty-form.php" method="POST" id="edit-property-form" enctype="multipart/form-data">
+            <form action="property-detail_for_approval.php" method="POST" id="edit-property-form" enctype="multipart/form-data">
+
+            <input type="hidden" id="ajaxAction" name="ajaxAction" value="">
 
                 <input type="hidden" name="property_id" value="<?php echo $PropertyId; ?>">
 
@@ -243,19 +290,19 @@ catch (PDOException $e) {
                     <h4 class="dash-title-three">Overview</h4>
                     <div class="dash-input-wrapper mb-30">
                         <label for="">Property Title*</label>
-                        <input type="text" placeholder="Your Property Name" name="PropertyTitle" value="<?php echo $PropertyTitle; ?>">
+                        <input type="text" placeholder="Your Property Name" name="PropertyTitle" value="<?php echo $PropertyTitle; ?>" disabled>
                     </div>
                     <!-- /.dash-input-wrapper -->
                     <div class="dash-input-wrapper mb-30">
                         <label for="">Description*</label>
-                        <textarea class="size-lg" placeholder="Write about property..." name="PropertyDescription"><?php echo $PropertyDescription; ?></textarea>
+                        <textarea class="size-lg" placeholder="Write about property..." name="PropertyDescription" disabled><?php echo $PropertyDescription; ?></textarea>
                     </div>
                     <!-- /.dash-input-wrapper -->
                     <div class="row align-items-end">
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Category*</label>
-                                <select class="nice-select" name="PropertyCategory">
+                                <select class="nice-select" name="PropertyCategory" disabled>
 
                                     <option value="Bunglow" <?php echo ($PropertyCategory == 'Bunglow') ? 'selected' : ''; ?>>Bunglow</option>
 
@@ -272,7 +319,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Price*</label>
-                                <input type="text" placeholder="Your Price" name="PropertyPrice" value="<?php echo $PropertyPrice; ?>">
+                                <input type="text" placeholder="Your Price" name="PropertyPrice" value="<?php echo $PropertyPrice; ?>" disabled>
                             </div>
                             <!-- /.dash-input-wrapper -->
                         </div>
@@ -286,14 +333,14 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Size in ft*</label>
-                                <input type="text" placeholder="Ex: 3,210 sqft" name="PropertySize" value="<?php echo $PropertySize; ?>">
+                                <input type="text" placeholder="Ex: 3,210 sqft" name="PropertySize" value="<?php echo $PropertySize; ?>" disabled>
                             </div>
                             <!-- /.dash-input-wrapper -->
                         </div>
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Bedrooms*</label>
-                                <select class="nice-select" name="PropertyBedrooms">
+                                <select class="nice-select" name="PropertyBedrooms" disabled>
                                     <?php echo ($PropertyBedrooms == 0) ? '<option value="0" selected>0</option>' : '<option value="0">0</option>'; ?>
                                     <?php echo ($PropertyBedrooms == 1) ? '<option value="1" selected>1</option>' : '<option value="1">1</option>'; ?>
                                     <?php echo ($PropertyBedrooms == 2) ? '<option value="2" selected>2</option>' : '<option value="2">2</option>'; ?>
@@ -307,7 +354,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Beds*</label>
-                                <select class="nice-select" name="PropertyBeds">
+                                <select class="nice-select" name="PropertyBeds" disabled>
                                     <?php echo ($PropertyBeds == 0) ? '<option value="0" selected>0</option>' : '<option value="0">0</option>'; ?>
                                     <?php echo ($PropertyBeds == 1) ? '<option value="1" selected>1</option>' : '<option value="1">1</option>'; ?>
                                     <?php echo ($PropertyBeds == 2) ? '<option value="2" selected>2</option>' : '<option value="2">2</option>'; ?>
@@ -331,7 +378,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Bathrooms*</label>
-                                <select class="nice-select" name="PropertyBathrooms">
+                                <select class="nice-select" name="PropertyBathrooms" disabled>
                                     <?php echo ($PropertyBathrooms == 0) ? '<option value="0" selected>0</option>' : '<option value="0">0</option>'; ?>
                                     <?php echo ($PropertyBathrooms == 1) ? '<option value="1" selected>1</option>' : '<option value="1">1</option>'; ?>
                                     <?php echo ($PropertyBathrooms == 2) ? '<option value="2" selected>2</option>' : '<option value="2">2</option>'; ?>
@@ -346,7 +393,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Kitchens*</label>
-                                <select class="nice-select" name="PropertyKitchens">
+                                <select class="nice-select" name="PropertyKitchens" disabled>
                                     <?php echo ($PropertyKitchens == 0) ? '<option value="0" selected>0</option>' : '<option value="0">0</option>'; ?>
                                     <?php echo ($PropertyKitchens == 1) ? '<option value="1" selected>1</option>' : '<option value="1">1</option>'; ?>
                                     <?php echo ($PropertyKitchens == 2) ? '<option value="2" selected>2</option>' : '<option value="2">2</option>'; ?>
@@ -360,7 +407,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Number Of Persons</label>
-                                <select class="nice-select" name="PropertyNumberOfPersons">
+                                <select class="nice-select" name="PropertyNumberOfPersons" disabled>
 
                                     <?php echo ($PropertyNumberOfPersons == 1) ? '<option value="1" selected>1</option>' : '<option value="1">1</option>'; ?>
                                     <?php echo ($PropertyNumberOfPersons == 2) ? '<option value="2" selected>2</option>' : '<option value="2">2</option>'; ?>
@@ -392,7 +439,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Farnichar</label>
-                                <select class="nice-select" name="PropertyFarnichar">
+                                <select class="nice-select" name="PropertyFarnichar" disabled>
 
 
                                     <?php echo ($PropertyFarnichar == 'Furnished') ? '<option value="Furnished" selected>Furnished</option>' : '<option value="Furnished">Furnished</option>'; ?>
@@ -409,7 +456,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Year Built*</label>
-                                <input type="text" placeholder="Type Year" name="PropertyYearBuilt" value="<?php echo $PropertyYearBuilt; ?>">
+                                <input type="text" placeholder="Type Year" name="PropertyYearBuilt" value="<?php echo $PropertyYearBuilt; ?>" disabled>
                             </div>
                             <!-- /.dash-input-wrapper -->
                         </div>
@@ -417,7 +464,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Availability Status*</label>
-                                <select class="nice-select" name="PropertyAvailabilityStatus">
+                                <select class="nice-select" name="PropertyAvailabilityStatus" disabled>
 
                                     <?php echo ($PropertyAvailabilityStatus == 'Available') ? '<option value="Available" selected>Available</option>' : '<option value="Available">Available</option>'; ?>
                                     <?php echo ($PropertyAvailabilityStatus == 'Not Available') ? '<option value="Not Available" selected>Not Available</option>' : '<option value="Not Available">Not Available</option>'; ?>
@@ -431,7 +478,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">For*</label>
-                                <select class="nice-select" name="PropertyFor">
+                                <select class="nice-select" name="PropertyFor" disabled>
                                     <!-- <option value="Boys Only">Boys Only</option>
                                     <option value="Girls Only">Girls Only</option>
                                     <option value="Both">Both</option> -->
@@ -484,80 +531,17 @@ catch (PDOException $e) {
                 <div class="bg-white card-box border-20 mt-40">
                     <h4 class="dash-title-three m0 pb-5">Select Amenities</h4>
                     <ul class="style-none d-flex flex-wrap filter-input">
-                        <!-- <li>
-                            <input type="checkbox" value="AC" placeholder="" name="AC">
-                            <label>A/C</label>
-                        </li>
 
-                        <li>
-                            <input type="checkbox" value="Geyser" name="Geyser">
-                            <label>Geyser</label>
-                        <li>
-                            <input type="checkbox" " value=" Parking" placeholder="" name="Parking">
-                            <label>Parking</label>
-                        </li>
-
-
-                        <li>
-                            <input type="checkbox" value="VisitorsAllowed" name="VisitorsAllowed">
-                            <label>Visitor Allowed</label>
-                        </li>
-
-
-                        <li>
-                            <input type="checkbox" value="Refrigerator" name="Refrigerator">
-                            <label>Refrigerator</label>
-                        </li>
-
-                        <li>
-                            <input type="checkbox" value="Wifi" name="Wifi">
-                            <label>Wifi</label>
-                        </li>
-                        <li>
-                            <input type="checkbox" value="TV" name="TV">
-                            <label>TV</label>
-                        </li>
-
-                        <li>
-                            <input type="checkbox" value="Laundry" name="Laundry">
-                            <label>Laundry</label>
-                        </li>
-
-                        <li>
-                            <input type="checkbox" value="Elevator" name="Elevator">
-                            <label>Elevator</label>
-                        </li>
-
-                        <li>
-                            <input type="checkbox" value="CCTV" name="CCTV">
-                            <label>CCTV</label>
-                        </li> -->
-
-                        <?php echo ($PropertyWifi == '1') ? '<li><input type="checkbox" value="Wifi" name="Wifi" checked><label>Wifi</label></li>' : '<li><input type="checkbox" value="Wifi" name="Wifi"><label>Wifi</label></li>'; ?>
-
-
-                        <?php echo ($PropertyAC == '1') ? '<li><input type="checkbox" value="AC" placeholder="" name="AC" checked><label>A/C</label></li>' : '<li><input type="checkbox" value="AC" placeholder="" name="AC"><label>A/C</label></li>'; ?>
-
-                        <?php echo ($PropertyGeyser == '1') ? '<li><input type="checkbox" value="Geyser" name="Geyser" checked><label>Geyser</label></li>' : '<li><input type="checkbox" value="Geyser" name="Geyser"><label>Geyser</label></li>'; ?>
-
-                        <?php echo ($PropertyTV == '1') ? '<li><input type="checkbox" value="TV" name="TV" checked><label>TV</label></li>' : '<li><input type="checkbox" value="TV" name="TV"><label>TV</label></li>'; ?>
-
-                        <?php echo ($PropertyParking == '1') ? '<li><input type="checkbox" value="Parking" placeholder="" name="Parking" checked><label>Parking</label></li>' : '<li><input type="checkbox" value="Parking" placeholder="" name="Parking"><label>Parking</label></li>'; ?>
-
-                        <?php echo ($PropertyLaundry == '1') ? '<li><input type="checkbox" value="Laundry" name="Laundry" checked><label>Laundry</label></li>' : '<li><input type="checkbox" value="Laundry" name="Laundry"><label>Laundry</label></li>'; ?>
-
-
-                        <?php echo ($PropertyVisitorsAllowed == '1') ? '<li><input type="checkbox" value="VisitorsAllowed" name="VisitorsAllowed" checked><label>Visitor Allowed</label></li>' : '<li><input type="checkbox" value="VisitorsAllowed" name="VisitorsAllowed"><label>Visitor Allowed</label></li>'; ?>
-
-                        <?php echo ($PropertyElevator == '1') ? '<li><input type="checkbox" value="Elevator" name="Elevator" checked><label>Elevator</label></li>' : '<li><input type="checkbox" value="Elevator" name="Elevator"><label>Elevator</label></li>'; ?>
-
-                        <?php echo ($PropertyRefrigerator == '1') ? '<li><input type="checkbox" value="Refrigerator" name="Refrigerator" checked><label>Refrigerator</label></li>' : '<li><input type="checkbox" value="Refrigerator" name="Refrigerator"><label>Refrigerator</label></li>'; ?>
-
-
-
-
-                        <?php echo ($PropertyCCTV == '1') ? '<li><input type="checkbox" value="CCTV" name="CCTV" checked><label>CCTV</label></li>' : '<li><input type="checkbox" value="CCTV" name="CCTV"><label>CCTV</label></li>'; ?>
-
+                        <li><input type="checkbox" value="Wifi" name="Wifi" <?php echo ($PropertyWifi == '1') ? 'checked' : ''; ?> disabled><label>Wifi</label></li>
+                        <li><input type="checkbox" value="AC" name="AC" <?php echo ($PropertyAC == '1') ? 'checked' : ''; ?> disabled><label>A/C</label></li>
+                        <li><input type="checkbox" value="Geyser" name="Geyser" <?php echo ($PropertyGeyser == '1') ? 'checked' : ''; ?> disabled><label>Geyser</label></li>
+                        <li><input type="checkbox" value="TV" name="TV" <?php echo ($PropertyTV == '1') ? 'checked' : ''; ?> disabled><label>TV</label></li>
+                        <li><input type="checkbox" value="Parking" name="Parking" <?php echo ($PropertyParking == '1') ? 'checked' : ''; ?> disabled><label>Parking</label></li>
+                        <li><input type="checkbox" value="Laundry" name="Laundry" <?php echo ($PropertyLaundry == '1') ? 'checked' : ''; ?> disabled><label>Laundry</label></li>
+                        <li><input type="checkbox" value="VisitorsAllowed" name="VisitorsAllowed" <?php echo ($PropertyVisitorsAllowed == '1') ? 'checked' : ''; ?> disabled><label>Visitor Allowed</label></li>
+                        <li><input type="checkbox" value="Elevator" name="Elevator" <?php echo ($PropertyElevator == '1') ? 'checked' : ''; ?> disabled><label>Elevator</label></li>
+                        <li><input type="checkbox" value="Refrigerator" name="Refrigerator" <?php echo ($PropertyRefrigerator == '1') ? 'checked' : ''; ?> disabled><label>Refrigerator</label></li>
+                        <li><input type="checkbox" value="CCTV" name="CCTV" <?php echo ($PropertyCCTV == '1') ? 'checked' : ''; ?> disabled><label>CCTV</label></li>
 
                     </ul>
                 </div>
@@ -569,7 +553,7 @@ catch (PDOException $e) {
                         <div class="col-12">
                             <div class="dash-input-wrapper mb-25">
                                 <label for="">Address*</label>
-                                <input type="text" placeholder="145/A, Ranchview" name="PropertyAddress" value="<?php echo $PropertyAddress; ?>">
+                                <input type="text" placeholder="145/A, Ranchview" name="PropertyAddress" value="<?php echo $PropertyAddress; ?>" disabled>
                             </div>
                             <!-- /.dash-input-wrapper -->
                         </div>
@@ -577,33 +561,8 @@ catch (PDOException $e) {
                         <div class="col-lg-4">
                             <div class="dash-input-wrapper mb-25">
                                 <label for="">City*</label>
-                                <select class="nice-select" name="PropertyCity">
-                                    <!-- <option value="0">Select City</option>
-                                    <option value="Ahmedabad">Ahmedabad</option>
-                                    <option value="Surat">Surat</option>
-                                    <option value="Vadodara">Vadodara</option>
-                                    <option value="Rajkot">Rajkot</option>
-                                    <option value="Bangalore">Bangalore</option>
-                                    <option value="Mumbai">Mumbai</option>
-                                    <option value="Delhi">Delhi</option>
-                                    <option value="Chennai">Chennai</option>
-                                    <option value="Kolkata">Kolkata</option>
-                                    <option value="Hyderabad">Hyderabad</option>
-                                    <option value="Pune">Pune</option>
-                                    <option value="Jaipur">Jaipur</option>
-                                    <option value="Lucknow">Lucknow</option>
-                                    <option value="Kanpur">Kanpur</option>
-                                    <option value="Nagpur">Nagpur</option>
-                                    <option value="Indore">Indore</option>
-                                    <option value="Thane">Thane</option>
-                                    <option value="Bhopal">Bhopal</option>
-                                    <option value="Visakhapatnam">Visakhapatnam</option>
-                                    <option value="Pimpri-Chinchwad">Pimpri-Chinchwad</option>
-                                    <option value="Patna">Patna</option>
-                                    <option value="Vadodara">Vadodara</option>
-                                    <option value="Ghaziabad">Ghaziabad</option>
-                                    <option value="Ludhiana">Ludhiana</option>
-                                    <option value="Agra">Agra</option> -->
+                                <select class="nice-select" name="PropertyCity" disabled>
+
                                     <?php echo ($PropertyCity == 'Ahmedabad') ? '<option value="Ahmedabad" selected>Ahmedabad</option>' : '<option value="Ahmedabad">Ahmedabad</option>'; ?>
 
                                     <?php echo ($PropertyCity == 'Surat') ? '<option value="Surat" selected>Surat</option>' : '<option value="Surat">Surat</option>'; ?>
@@ -655,7 +614,7 @@ catch (PDOException $e) {
                         <div class="col-md-6">
                             <div class="dash-input-wrapper mb-30">
                                 <label for="">Pin Code*</label>
-                                <input type="text" placeholder="Type Pincode" name="PropertyPinCode" value="<?php echo $PropertyPinCode; ?>">
+                                <input type="text" placeholder="Type Pincode" name="PropertyPinCode" value="<?php echo $PropertyPinCode; ?>" disabled>
                             </div>
                             <!-- /.dash-input-wrapper -->
                         </div>
@@ -666,7 +625,7 @@ catch (PDOException $e) {
                         <div class="col-lg-4">
                             <div class="dash-input-wrapper mb-25">
                                 <label for="">State*</label>
-                                <select class="nice-select" name="PropertyState">
+                                <select class="nice-select" name="PropertyState" disabled>
 
                                     <?php echo ($PropertyState == 'Gujarat') ? '<option value="Gujarat" selected>Gujarat</option>' : '<option value="Gujarat">Gujarat</option>'; ?>
 
@@ -702,28 +661,12 @@ catch (PDOException $e) {
                 </div>
                 <!-- /.card-box -->
                 <div class="button-group d-inline-flex align-items-center mt-30">
-                    <button type="submit" name="submit" class="dash-btn-two tran3s me-3">Submit Property</button>
-                    <a href="#" class="dash-cancel-btn tran3s">Cancel</a>
+                    <button type="submit" name="submit" class="dash-btn-two tran3s me-3">Accept Property</button>
+                    <a href="#" class="dash-cancel-btn tran3s" onclick="deleteProperty()">Reject</a>
                 </div>
         </div>
     </div>
     <!-- /.dashboard-body -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     </div>
 
@@ -753,119 +696,59 @@ catch (PDOException $e) {
     <!-- Theme js -->
     <script src="../../js/theme.js"></script>
 
-    <!-- Include jQuery and jQuery Validation Plugin -->
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
 
     <script>
-        $(document).ready(function() {
-            $("#edit-property-form").validate({
-                rules: {
-                    PropertyTitle: {
-                        required: true,
-                        minlength: 3,
-                        maxlength: 50,
-                        alphanumericSpace: true
-                    },
-                    PropertyDescription: {
-                        required: true,
-                        minlength: 10,
-                        maxlength: 500
-                    },
-                    PropertyPrice: {
-                        required: true,
-                        number: true,
-                        min: 0,
-                        max: 100000000
-                    },
-                    PropertyYearBuilt: {
-                        required: true,
-                        digits: true,
-                        minlength: 4,
-                        maxlength: 4,
-                        min: 1900,
-                        max: new Date().getFullYear()
-                    },
-                    PropertyAddress: {
-                        required: true,
-                        minlength: 5,
-                        maxlength: 100
-                    },
+        function deleteProperty() {
+    swal.fire({
+        title: "Are you sure?",
+        text: "Are you sure you want to reject this property?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, reject it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Set hidden input value
+            $('#ajaxAction').val('rejectProperty');
 
-                    PropertyCity: {
-                        required: true
-                    },
-                    PropertyPinCode: {
-                        required: true,
-                        digits: true,
-                        minlength: 6,
-                        maxlength: 6
-                    },
-                    PropertyState: {
-                        required: true
-                    }
-                },
-                messages: {
-                    PropertyTitle: {
-                        required: "Please enter property title",
-                        minlength: "Title must be at least 3 characters long",
-                        maxlength: "Title must be at most 50 characters long",
-                        alphanumericSpace: "Title must contain only letters, numbers, and spaces"
-                    },
-                    PropertyDescription: {
-                        required: "Please enter property description",
-                        minlength: "Description must be at least 10 characters long",
-                        maxlength: "Description must be at most 500 characters long"
-                    },
-                    PropertyPrice: {
-                        required: "Please enter property price",
-                        number: "Price must be a number",
-                        min: "Price must be more then 500",
-                        max: "Price must be at most 40000"
-                    },
-                    PropertyYearBuilt: {
-                        required: "Please enter year built",
-                        digits: "Year built must be a number",
-                        minlength: "Year built must be 4 digits long",
-                        maxlength: "Year built must be 4 digits long",
-                        min: "Year built must be at least 1900",
-                        max: "Year built must be at most current year"
-                    },
-                    PropertyAddress: {
-                        required: "Please enter property address",
-                        minlength: "Address must be at least 5 characters long",
-                        maxlength: "Address must be at most 100 characters long"
-                    },
-                    PropertyCity: {
-                        required: "Please select property city"
-                    },
-                    PropertyPinCode: {
-                        required: "Please enter property pin code",
-                        digits: "Pin code must be a number",
-                        minlength: "Pin code must be 6 digits long",
-                        maxlength: "Pin code must be 6 digits long"
-                    },
-                    PropertyState: {
-                        required: "Please select property state"
-                    }
+            // AJAX request to reload the page with the action flag
+            $.ajax({
+                url: window.location.href, // Reload the current page
+                type: 'POST',
+                data: $('#ajaxAction').serialize(), // Serialize the hidden input value
+                success: function(response) {
+                    //rericet to accept-reject-property.php
+                    window.location = "accept-reject-property.php";
                 }
             });
-
-            $.validator.addMethod("alphanumericSpace", function(value, element) {
-                return this.optional(element) || /^[a-zA-Z0-9\s]+$/i.test(value);
-            }, "Title must contain only letters, numbers, and spaces.");
-        });
+        }
+    });
+}
     </script>
 
 
 
-
-
-
-
-
-
-
+    <script>
+        <?php
+        if ($update_status) {
+        ?>
+            swal.fire({
+                title: "Property Approved",
+                text: "Property has been approved successfully",
+                icon: "success",
+            }).then(function() {
+                window.location = "accept-reject-property.php";
+            });
+        <?php
+        }
+        ?>
+    </script>
 
 </body>
+
 </html>

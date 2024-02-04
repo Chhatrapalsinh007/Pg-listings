@@ -143,6 +143,7 @@
                                             <div class="input-box-one border-left">
                                                 <div class="label">City</div>
                                                 <select class="nice-select" name="property_city">
+                                                    <option value = "">Select City</option>
                                                     <option value="Ahmedabad">Ahmedabad</option>
                                                     <option value="Bangalore">Bangalore</option>
                                                     <option value="Chennai">Chennai</option>
@@ -158,6 +159,7 @@
                                             <div class="input-box-one border-left">
                                                 <div class="label">Property Type</div>
                                                 <select class="nice-select" name="property_type">
+                                                    <option value = "">Select Property Type</option>
                                                     <option value="Bunglow">Bunglow</option>
                                                     <option value="Tenaments">Tenaments</option>
                                                     <option value="Flat">Flat</option>
@@ -170,6 +172,7 @@
                                             <div class="input-box-one border-left border-lg-0">
                                                 <div class="label">Price Range</div>
                                                 <select class="nice-select" name="price_range">
+                                                    <option value = "">Select Price Range</option>
                                                     <option value="1000-5000">₹ 1000 - ₹ 5000</option>
                                                     <option value="5000-10000">₹ 5000 - ₹ 10000</option>
                                                     <option value="10000-15000">₹ 10000 - ₹ 15000</option>
